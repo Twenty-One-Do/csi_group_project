@@ -4,7 +4,7 @@ import requests
 import sqlite3
 
 app = Flask(__name__)
-connection = sqlite3.connect('database/database.db')
+connection = sqlite3.connect('database.db')
 
 cur = connection.cursor()
 
