@@ -1,57 +1,26 @@
 from flask import Flask, render_template, request
-
+from util import db_initialization, add_sample, search_query_execute
 import requests
 import sqlite3
 
 app = Flask(__name__)
-connection = sqlite3.connect('database.db')
+connection = sqlite3.connect('database.db', check_same_thread=False)
 
 cur = connection.cursor()
 
-cur.execute('''
-CREATE TABLE IF NOT EXISTS Members (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username CHAR(25) NOT NULL UNIQUE,
-    password CHAR(65) NOT NULL,
-    admin INTEGER NOT NULL DEFAULT 0,
-    reg_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    last_acc_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    is_deleted INTEGER NOT NULL DEFAULT 0
-);
-''')
-
-cur.execute('''
-CREATE TABLE IF NOT EXISTS Posts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title CHAR(25),
-    contents TEXT,
-    user_id INTEGER,
-    reg_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    mod_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    consecutive_cnt INTEGER DEFAULT 1,
-    like_cnt INTEGER DEFAULT 1,
-    cnt INTEGER DEFAULT 1,
-    FOREIGN KEY(user_id) REFERENCES Members(id)
-)
-''')
-
-cur.execute('''
-CREATE TABLE IF NOT EXISTS Comments (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    post_id INTEGER,
-    user_id INTEGER,
-    contents TEXT,
-    reg_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    mod_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY(user_id) REFERENCES Members(id),
-    FOREIGN KEY(post_id) REFERENCES Posts(id)
-)
-''')
-
+db_initialization(cur)
+add_sample(connection, cur) # 실행 후 주석처리
 
 @app.route("/")
 def home():
-    context = None
+    search_queries = {
+        'today_til':{
+                'table':'Posts', 
+                'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
+                'condition': 'date(reg_date) = date(CURRENT_DATE)'},
+        }
+    context = search_query_execute(cur, search_queries)
+    
     return render_template("main.html", data=context)
 
 
@@ -68,8 +37,19 @@ def til_list():
 
 
 @app.route("/post/<post_id>")
-def post():
-    context = None
+def post(post_id):
+    search_queries = {
+        'post':{
+                'table':'Posts', 
+                'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
+                'condition': 'id = {}'.format(post_id)},
+        'comments':{
+                'table':'Comments', 
+                'attributes': ['id', 'user_id', 'contents', 'post_id', 'reg_date'],
+                'condition': 'post_id = {}'.format(post_id)},
+        }
+    context = search_query_execute(cur, search_queries)
+
     return render_template("post.html", data=context)
 
 

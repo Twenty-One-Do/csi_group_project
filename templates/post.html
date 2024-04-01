@@ -1,11 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  
-</body>
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Post</title>
+      <link href="../static/styles.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+
+    <div class="navbar">
+        <div>Home | TIL | Leaderboard</div>
+        <div>My</div>
+    </div>
+    <div class="container">
+      <div class="post-container">
+          <div class="post-title">{{ data['post'][0]['title'] }}</div>
+          <div class="post-meta">
+              Posted by {{ data['post'][0]['user_id'] }} on {{ data['post'][0]['reg_date'] }}
+          </div>
+          <div class="post-contents">
+              {{ data['post'][0]['contents'] }}
+          </div>
+          <div class="like-count">
+              좋아요 {{ data['post'][0]['like_cnt'] }} 개
+          </div>
+          <div class="comments">
+              {% if data['comments'][0] == None %}
+                댓글이 없습니다.
+              {% else %}
+                {{ data['comments'][0]['user_id'] }} - {{ data['comments'][0]['contents'] }}
+              {% endif %}
+          </div>
+      </div>
+    </div>
+
+    <footer>
+        Team CSI
+        <br>github: xxxxx
+        <br>notion: xxxxx
+    </footer>
+  </body>
 </html>
