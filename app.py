@@ -13,10 +13,10 @@ CREATE TABLE IF NOT EXISTS Members (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username CHAR(25) NOT NULL UNIQUE,
     password CHAR(65) NOT NULL,
-    admin INTEGER NOT NULL DEFAULT 0, -- SQLite에서는 BOOLEAN 대신 INTEGER 사용
+    admin INTEGER NOT NULL DEFAULT 0,
     reg_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     last_acc_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    is_deleted INTEGER NOT NULL DEFAULT 0 -- SQLite에서는 BOOLEAN 대신 INTEGER 사용
+    is_deleted INTEGER NOT NULL DEFAULT 0
 );
 ''')
 
@@ -25,13 +25,13 @@ CREATE TABLE IF NOT EXISTS Posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title CHAR(25),
     contents TEXT,
-    userid INTEGER,
+    user_id INTEGER,
     reg_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     mod_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     consecutive_cnt INTEGER DEFAULT 1,
     like_cnt INTEGER DEFAULT 1,
     cnt INTEGER DEFAULT 1,
-    FOREIGN KEY(userid) REFERENCES another_table_name(another_table_id_column)
+    FOREIGN KEY(user_id) REFERENCES Members(id)
 )
 ''')
 
@@ -42,7 +42,9 @@ CREATE TABLE IF NOT EXISTS Comments (
     user_id INTEGER,
     contents TEXT,
     reg_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    mod_date DATETIME DEFAULT CURRENT_TIMESTAMP
+    mod_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(user_id) REFERENCES Members(id),
+    FOREIGN KEY(post_id) REFERENCES Posts(id)
 )
 ''')
 
