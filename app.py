@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session
 from util import db_initialization, add_sample, search_query_execute
 import requests
 import sqlite3
@@ -20,7 +20,7 @@ def home():
             'condition': 'date(reg_date) = date(CURRENT_DATE)'},
     }
     context = search_query_execute(cur, search_queries)
-
+    
     return render_template("main.html", data=context)
 
 
