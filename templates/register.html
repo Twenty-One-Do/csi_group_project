@@ -1,3 +1,11 @@
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <script>
+      alert("{{ messages[-1] }}")
+    </script>
+  {% endif %}
+{% endwith %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -34,7 +42,15 @@
   </div>
 
   <!-- ---------------------------------------------------------------------------------------- -->
-
+  <form action="register" method="POST", class="register_form">
+    <div class="inp_container">
+      id: <input type="text" name="username"/>
+      pw: <input type="password" name="pw"/>
+    </div>
+    <div class="btn_container">
+      <button type="submit" class="post_btn">회원가입</button>
+    </div>
+  </form>
   <!-- ---------------------------------------------------------------------------------------- -->
 
   <footer>

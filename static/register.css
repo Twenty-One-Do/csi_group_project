@@ -1,1 +1,17 @@
 @import url("color.css");
+
+.register_form{
+    background-color: var(--normal-color);
+    height: 50%;
+    margin: 20%;
+}
+
+.inp_container{
+    margin: 10%;
+}
+
+.btn_container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
