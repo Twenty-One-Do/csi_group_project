@@ -48,7 +48,7 @@
     <div class="card-container">
       {% for today_til in data['today_til'] %}
       <div class="til_card">
-        <div class="front" style="background-image: url('');">
+        <div class="front" href="background-image: url(post/{{ today_til['id'] }})">
           <!-- 앞면 내용 -->
           <h3>{{ today_til['title'] }}</h3>
         </div>
@@ -73,4 +73,5 @@
   </footer>
 
 </body>
+
 </html>

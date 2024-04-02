@@ -10,7 +10,8 @@ connection = sqlite3.connect('database.db', check_same_thread=False)
 cur = connection.cursor()
 
 db_initialization(cur)
-# add_sample(connection, cur) # 실행 후 주석처리
+# add_sample(connection, cur)  # 실행 후 주석처리
+
 
 @app.route("/")
 def home():
@@ -34,13 +35,13 @@ def my_page():
 @app.route("/til_list")
 def til_list():
     filter_list = {
-        'search' : {
-                'table' : 'Posts',
-                'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
-                'condition' : None},   
+        'search': {
+            'table': 'Posts',
+            'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
+            'condition': None},
         'lists': {
-                'table' : 'Posts',
-                'attributes' :['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],}
+            'table': 'Posts',
+            'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'], }
     }
     context = search_query_execute(cur, filter_list)
 

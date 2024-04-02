@@ -19,11 +19,15 @@ body {
 footer {
     background-color: var(--accent-color);
     color: var(--normal-color);
-    text-align: center;
+    text-align: left;
     padding: 10px 20px;
     position: fixed;
     bottom: 0;
     width: 100%;
+}
+
+footer>a {
+    width: 50px;
 }
 
 /* nav바 스타일 입니다 */
@@ -56,7 +60,7 @@ a {
 
 .navbar>div>ul>li>a:hover {
     color: var(--middle-color);
-} 
+}
 
 .dropdown {
     display: none;
