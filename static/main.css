@@ -1,0 +1,45 @@
+.til_card {
+    perspective: 1000px;
+}
+
+.til_card>.front,
+.til_card>.back {
+    width: 300px;
+    height: 350px;
+    background-size: cover !important;
+    background-position: center !important;
+    border-radius: 10px;
+    transition: transform 0.5s, opacity 0.5s;
+    backface-visibility: hidden;
+    position: absolute;
+    top: 0;
+    text-align: center;
+    align-content: center;
+}
+
+.til_card>.front {
+    background: white;
+}
+
+.til_card>.back {
+    background: white;
+    transform: rotateY(180deg);
+}
+
+.til_card>.back>a {
+    font-size: 20px;
+    color: black;
+}
+
+.til_card>.back>a:hover {
+    border-radius: 5px;
+    background-color: lightblue;
+}
+
+.til_card:hover>.front {
+    transform: rotateY(-180deg);
+}
+
+.til_card:hover>.back {
+    transform: rotateY(0deg);
+}

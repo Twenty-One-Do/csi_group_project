@@ -27,7 +27,7 @@ body {
     padding: 20px;
     margin-bottom: 10px;
     border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
 }
 
 .card h3 {
@@ -50,7 +50,7 @@ footer {
     color: white;
     text-align: center;
     padding: 10px 20px;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     width: 100%;
 }
@@ -63,7 +63,7 @@ footer {
     margin: 20px;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, .1);
 }
 
 .post-contents {
@@ -84,6 +84,7 @@ footer {
 .post-contents {
     margin-bottom: 20px;
 }
+
 .like-count {
     font-size: 14px;
     margin-bottom: 8px;
@@ -93,4 +94,65 @@ footer {
     background: #f0f0f0;
     padding: 10px;
     margin: 10px 0;
+}
+
+/* nav바 스타일 입니다 */
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.navbar>div>ul {
+    display: flex;
+    justify-content: space-between;
+}
+
+li {
+    position: relative;
+    list-style-type: none;
+    text-align: center;
+    width: 100px;
+}
+
+a {
+    display: block;
+    padding: 5px;
+    color: white;
+    text-decoration: none;
+}
+
+/* 카테고리 메뉴 호버 설정 */
+/* 
+.navbar>div>ul>li>a:hover {
+    background-color: darkgray;
+} */
+
+.dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    min-width: 100px;
+    z-index: 1;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+}
+
+li:hover .dropdown {
+    display: block;
+}
+
+.dropdown li a {
+    padding: 10px;
+    color: white;
+    background-color: black;
+    border-bottom: 1px solid #ddd;
+}
+
+.dropdown li:last-child a {
+    border-bottom: none;
+}
+
+.dropdown li a:hover {
+    background-color: darkgray;
 }

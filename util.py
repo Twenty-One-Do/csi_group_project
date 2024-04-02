@@ -40,6 +40,7 @@ def db_initialization(cur):
     )
     ''')
 
+
 def add_sample(connection, cur):
     cur.execute('''
     INSERT INTO Members (username, password, admin, reg_date, last_acc_date, is_deleted)
@@ -59,21 +60,30 @@ def add_sample(connection, cur):
     ''')
     connection.commit()
 
-def search_query_execute(cur, queries):#types, table, attributes, condition):
-    context = {key:[] for key in queries.keys()}
+
+def search_query_execute(cur, queries):
+    context = {key: [] for key in queries.keys()}
 
     for k in context.keys():
 
         attributes = ', '.join(queries[k]['attributes'])
-        query = '''
-                SELECT {}
-                FROM {}
-                WHERE {};
-                '''.format(attributes, queries[k]['table'], queries[k]['condition'])
+        if queries[k]['condition'] is not None :
+            query = '''
+                    SELECT {}
+                    FROM {}
+                    WHERE {};
+                    '''.format(attributes, queries[k]['table'], queries[k]['condition'])
+        else :
+            query = '''
+                    SELECT {}
+                    FROM {};
+                    '''.format(attributes, queries[k]['table'])
+
         result = cur.execute(query)
         result = result.fetchall()
         for res in result:
-            context[k].append({key:val for key, val in zip(queries[k]['attributes'], res)})
+            context[k].append(
+                {key: val for key, val in zip(queries[k]['attributes'], res)})
         if len(context[k]) == 0:
             context[k].append(None)
     return context
