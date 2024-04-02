@@ -39,9 +39,11 @@ def til_list():
                 'condition' : None},   
         'lists': {
                 'table' : 'Posts',
-                'attributes' :['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],}
+                'attributes' :['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
+                'condition' : None},
     }
     context = search_query_execute(cur, filter_list)
+    print(context)
 
     return render_template("til_list.html", data=context)
 
