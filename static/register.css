@@ -1,17 +1,84 @@
 @import url("color.css");
 
-.register_form{
+html{
+    background-color: var(--middle-color);
+  }
+  
+  div#center{
     background-color: var(--normal-color);
-    height: 50%;
-    margin: 20%;
-}
-
-.inp_container{
-    margin: 10%;
-}
-
-.btn_container{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+    border: solid;
+    border-color: var(--accent-color);
+    border-width: 5px;
+    border-radius: 10px;
+  
+    margin: auto auto;
+    margin-top: 10vh;
+  
+    width: 250px;
+    height: 350px;
+  }
+  
+  div.intro_title{
+    margin: auto;
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  div.loginForm{
+    margin: 40px 5px 15px 10px;
+    width: 90%;
+    min-width: 200px;
+    height: 35%;
+    min-height: 100;
+  }
+  
+  div.loginInput{
+    margin: 20px 0px;
+    align-content: center;
+  }
+  
+  
+  button{
+    background-color: var(--normal-color);
+    border-color: var(--accent-color);
+    border-radius: 5px;
+  
+    height: 35px;
+    width: 80%;
+    min-width: 200px;
+    text-align: center;
+  
+    margin-top: 10px;
+    margin-left: 20px;
+  }
+  
+  button.btnSignup{
+    border: none;
+  
+    margin-top: 0px;
+    height: 20px;
+  }
+  
+  input.loginInput{
+    border: none;
+    border-bottom: solid;
+    border-width: 1px;
+    border-color: #dddddd;
+  
+    width: 90%;
+  }
+  
+  span{
+    color: var(--btn-color);
+    font-size: 20pt;
+    font-weight: 1000;
+  }
+  
+  span.btnText{
+    font-size: 12pt;
+  }
+  
+  span.btnSignupText{
+    font-size: 10pt;
+    text-decoration: underline;
+  }
