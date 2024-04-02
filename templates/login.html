@@ -8,9 +8,13 @@
   <link href="../static/styles.css" rel="stylesheet" type="text/css" />
   <link href="../static/login.css" rel="stylesheet" type="text/css" />
 </head>
-
 <body>
-
+  <script src="../static/sha256.js"></script>
+  {% if error_message %}
+      <script>
+          alert('{{ error_message }}');
+      </script>
+  {% endif %}
   <div class="navbar">
     <div class="left">
       <ul>
@@ -34,7 +38,31 @@
   </div>
 
   <!-- ---------------------------------------------------------------------------------------- -->
+<div id=center>
+    <div class="intro_title">
+      <span class="introText">TIL 게시판</span></div>
+    <div class="intro_title"><span class="introText">Log In</span></div>
 
+    <div class="loginForm">
+      <form action="/login" method="POST" id="myForm">
+        <div class="loginInput">
+          <input type="text" name="username" id="username" class="loginInput" placeholder="username">
+        </div>
+        <div class="loginInput">
+          <input type="password" name="password" id="password" class="loginInput" placeholder="password">
+        </div>
+        <div class="loginInput">
+          <button onclick="convert_pw()" class="btn"><span class="btnText">Sign In</span></button>
+        </div>
+      </form>
+      <hr>
+      <div class="signUp">
+        <form action="/register" method="GET">
+          <button type="submit" class="btnSignup"><span class="btnSignupText">Want to join us? Sign up</span></button>
+        </form>
+      </div>
+    </div>
+  </div>
   <!-- ---------------------------------------------------------------------------------------- -->
 
   <footer>
