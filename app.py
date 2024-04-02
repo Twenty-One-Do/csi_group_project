@@ -9,7 +9,12 @@ connection = sqlite3.connect('database.db', check_same_thread=False)
 cur = connection.cursor()
 
 db_initialization(cur)
+<<<<<<< HEAD
 # add_sample(connection, cur) # 실행 후 주석처리
+=======
+# add_sample(connection, cur)  # 실행 후 주석처리
+
+>>>>>>> feature/leaderboard
 
 @app.route("/")
 def home():
@@ -83,8 +88,26 @@ def register():
 
 @app.route("/leaderboard")
 def leaderboard():
-    context = None
-    return render_template("leaderboard.html", data=context)
+    cur.execute(""" 
+                SELECT DISTINCT Members.username, Posts.consecutive_cnt
+                FROM Members
+                INNER JOIN Posts ON Members.id = Posts.user_id
+                ORDER BY Posts.consecutive_cnt DESC
+    """)  # Members에 있는 username을 id라는 공통키 활용 내부 조인, Posts.consecutive_cnt 내림차순 정렬
+    leaderboard_data = cur.fetchall()  # 해당 리스트 반환
+    print(leaderboard_data)
+    leaderboard_message = []
+
+    rank = 1
+    for row in leaderboard_data:
+        username = row[0]
+        consecutive_cnt = row[1]
+
+        message = f"{rank}등, {username}님 연속 {consecutive_cnt} 출석!"
+        leaderboard_message.append(message)
+        rank += 1
+
+    return render_template("leaderboard.html", data=leaderboard_message)
 
 
 if __name__ == "__main__":

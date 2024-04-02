@@ -1,11 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Post</title>
+  <link href="../static/styles.css" rel="stylesheet" type="text/css" />
 </head>
+
 <body>
-  
+
+  <div class="navbar">
+    <div>Home | TIL | Leaderboard</div>
+    <div>My</div>
+  </div>
+
+  <div class="leader-list">
+    <h2>Leaderboard</h2>
+    <div class="leaderboard">
+      {% for message in data %}
+      <div class="rank-item">
+        {{message}}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+
+  <footer>
+    Team CSI
+    <br>github: xxxxx
+    <br>notion: xxxxx
+  </footer>
 </body>
+
 </html>
