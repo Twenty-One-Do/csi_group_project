@@ -43,8 +43,7 @@ def til_list():
                 'condition' : None},
     }
     context = search_query_execute(cur, filter_list)
-    print(context)
-
+    
     return render_template("til_list.html", data=context)
 
 
