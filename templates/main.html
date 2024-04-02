@@ -1,37 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Main</title>
-      <link href="../static/styles.css" rel="stylesheet" type="text/css" />
-  </head>
-  <body>
 
-    <div class="navbar">
-        <div>Home | TIL | Leaderboard</div>
-        <div>My</div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Main</title>
+  <link href="../static/styles.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+
+  <div class="navbar">
+    <div>Home | TIL | Leaderboard</div>
+    <div>My</div>
+  </div>
+
+  <div class="container">
+    <h2>Leaderboard</h2>
+    <div class="card-container">
+      {% for today_til in data['today_til'] %}
+      <a href="post/{{ today_til['id'] }}" class="card" style="text-decoration: none;">
+        <h3>{{ today_til['title'] }}</h3>
+        <img src="{{ today_til['thumbnail'] }}" alt="Thumbnail">
+        <p>Likes: {{ today_til['like_cnt'] }}</p>
+        <p>Posted by: {{ today_til['user_id'] }} on {{ today_til['reg_date'] }}</p>
+      </a>
+      {% endfor %}
     </div>
+  </div>
 
-    <div class="container">
-        <h2>Today's TIL List</h2>
-        <div class="card-container">
-            {% for today_til in data['today_til'] %}
-            <a href="post/{{ today_til['id'] }}" class="card" style="text-decoration: none;">
-              <h3>{{ today_til['title'] }}</h3>
-              <img src="{{ today_til['thumbnail'] }}" alt="Thumbnail">
-              <p>Likes: {{ today_til['like_cnt'] }}</p>
-              <p>Posted by: {{ today_til['user_id'] }} on {{ today_til['reg_date'] }}</p>
-            </a>
-            {% endfor %}
-        </div>
-    </div>
+  <footer>
+    Team CSI
+    <br>github: xxxxx
+    <br>notion: xxxxx
+  </footer>
 
-    <footer>
-        Team CSI
-        <br>github: xxxxx
-        <br>notion: xxxxx
-    </footer>
+</body>
 
-  </body>
 </html>
