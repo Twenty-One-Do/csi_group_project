@@ -59,7 +59,7 @@ def add_sample(connection, cur):
     ''')
     connection.commit()
 
-def search_query_execute(cur, queries):#types, table, attributes, condition):
+def search_query_execute(cur, queries):
     context = {key:[] for key in queries.keys()}
 
     for k in context.keys():
