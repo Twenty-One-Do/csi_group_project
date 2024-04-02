@@ -9,18 +9,19 @@ connection = sqlite3.connect('database.db', check_same_thread=False)
 cur = connection.cursor()
 
 db_initialization(cur)
-add_sample(connection, cur) # 실행 후 주석처리
+# add_sample(connection, cur) # 실행 후 주석처리
+
 
 @app.route("/")
 def home():
     search_queries = {
-        'today_til':{
-                'table':'Posts', 
-                'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
-                'condition': 'date(reg_date) = date(CURRENT_DATE)'},
-        }
+        'today_til': {
+            'table': 'Posts',
+            'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
+            'condition': 'date(reg_date) = date(CURRENT_DATE)'},
+    }
     context = search_query_execute(cur, search_queries)
-    
+
     return render_template("main.html", data=context)
 
 
@@ -39,15 +40,15 @@ def til_list():
 @app.route("/post/<post_id>")
 def post(post_id):
     search_queries = {
-        'post':{
-                'table':'Posts', 
-                'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
-                'condition': 'id = {}'.format(post_id)},
-        'comments':{
-                'table':'Comments', 
-                'attributes': ['id', 'user_id', 'contents', 'post_id', 'reg_date'],
-                'condition': 'post_id = {}'.format(post_id)},
-        }
+        'post': {
+            'table': 'Posts',
+            'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
+            'condition': 'id = {}'.format(post_id)},
+        'comments': {
+            'table': 'Comments',
+            'attributes': ['id', 'user_id', 'contents', 'post_id', 'reg_date'],
+            'condition': 'post_id = {}'.format(post_id)},
+    }
     context = search_query_execute(cur, search_queries)
 
     return render_template("post.html", data=context)
