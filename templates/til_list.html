@@ -5,14 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TIL_List</title>
   <link href="../static/til_list_style.css" rel = "stylesheet" type="text/css" />
+  <link href="../static/til_list.css" rel="stylesheet" type="text/css" />
 </head>
   <body>
   
     <div class="navbar">
-        <div>Home | TIL | Leaderboard</div>
-        <div>My</div>
-    </div>    
-    
+      <div class="left">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/til_list">TIL</a></li>
+          <li><a href="/leaderboard">Leaderboard</a></li>
+        </ul>
+      </div>
+      <div class="right">
+        <ul>
+          <li><a href="#">My</a>
+            <ul class="dropdown">
+              <li><a href="/my_page">내 정보</a></li>
+              <li><a href="/til_list['user_id']">내 TIL</a></li>
+              <li><a href="/write">글 작성</a></li>
+              <li><a href="/logout">로그아웃</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!-- ---------------------------------------------------------------------------------------- -->
     <div class="search">
       <input type="text" class="til_search">
       <button type="submit">검색
@@ -20,12 +38,12 @@
     </div>
     
     <div class ="body"></div>
+    <!-- ---------------------------------------------------------------------------------------- -->
     <footer>
       Team CSI
-      <br>github: xxxxx
-      <br>notion: xxxxx
-  </footer>
-
+      <a href="https://github.com/luna-negra/csi_group_project/tree/main" target="_blank">github</a>
+      <a href="https://teamsparta.notion.site/1-CSI-6f9c97ddc53348598f701eb6f7796eb3" target="_blank">notion</a>
+    </footer>
   </body>
 
 </html>

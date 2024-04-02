@@ -9,12 +9,7 @@ connection = sqlite3.connect('database.db', check_same_thread=False)
 cur = connection.cursor()
 
 db_initialization(cur)
-<<<<<<< HEAD
 # add_sample(connection, cur) # 실행 후 주석처리
-=======
-# add_sample(connection, cur)  # 실행 후 주석처리
-
->>>>>>> feature/leaderboard
 
 @app.route("/")
 def home():
