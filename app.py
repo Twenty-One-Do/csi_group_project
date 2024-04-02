@@ -1,5 +1,6 @@
 from flask import Flask, flash, render_template, request, session, redirect, url_for
 from util import db_initialization, add_sample, search_query_execute
+from datetime import datetime
 import requests
 import sqlite3
 
@@ -72,10 +73,45 @@ def write():
     return render_template("write.html", data=context)
 
 
-@app.route("/login")
+@app.route(rule="/login", methods=["GET", "POST"])
 def login():
-    context = None
-    return render_template("login.html", data=context)
+    if request.method == "GET":
+        return render_template(template_name_or_list="login.html")
+
+    elif request.method == "POST":
+        data = request.form
+        select_queries = {
+            "Members":
+                {
+                    "table": "Members",
+                    "attributes": ["username", "password", "id"],
+                    "condition": f"username='{data.get('username')}' AND password='{data.get('password')}'"
+                }
+        }
+
+        print(data.get('password'))
+
+        result = search_query_execute(cur, select_queries)['Members']
+        if result == [None]:
+            return render_template(template_name_or_list="login.html", error_message="Password not match")
+
+        # 최근 로그인 시간 업데이트
+        user_id = result[0]['id']
+        login_time: datetime = datetime.now()
+        login_time_str: str = login_time.strftime("%Y-%m-%d %H:%M:%S").split(".")[0]
+
+        query = f"UPDATE Members SET last_acc_date = ? WHERE id = ?;"
+        cur.execute(query, (login_time_str, user_id))
+        connection.commit()
+        # 로그인 시간 업데이트 끝
+
+        # 세션 처리 및 user_id 보유를 위한 context 처리
+        # 세션 사용 방법 확인
+        context = {
+            "id": user_id
+        }
+
+        return redirect(url_for(endpoint="home"))
 
 
 @app.route("/register", methods = ['GET', 'POST'])
