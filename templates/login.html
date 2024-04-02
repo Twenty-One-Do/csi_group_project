@@ -9,7 +9,7 @@
   <link href="../static/login.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-  <script src="../static/sha256.js"></script>
+  <script src="../static/login.js"></script>
   {% if error_message %}
       <script>
           alert('{{ error_message }}');
@@ -44,7 +44,7 @@
     <div class="intro_title"><span class="introText">Log In</span></div>
 
     <div class="loginForm">
-      <form action="/login" method="POST" id="myForm">
+      <form action="/login" method="POST" class="login_Form">
         <div class="loginInput">
           <input type="text" name="username" id="username" class="loginInput" placeholder="username">
         </div>
@@ -52,7 +52,7 @@
           <input type="password" name="password" id="password" class="loginInput" placeholder="password">
         </div>
         <div class="loginInput">
-          <button onclick="convert_pw()" class="btn"><span class="btnText">Sign In</span></button>
+          <button class="btn"><span class="btnText">Sign In</span></button>
         </div>
       </form>
       <hr>

@@ -1,7 +1,30 @@
-  function convert_pw(){
-    password = SHA256(document.getElementById("password").value)
+document.addEventListener('DOMContentLoaded', function() {
+  var registerForm = document.querySelector('.register_form');
+  registerForm.addEventListener('submit', function(event) {
+    signup_qualification(event);
+  });
+});
+
+function signup_qualification(event) {
+  var inp_username = document.getElementById("username").value;
+  var inp_password = document.getElementById("password").value;
+  var regex = /^[0-9a-zA-Z!@#$%^&]+$/;
+  var un_qualification = check_Qualification(inp_username, 5, 15, regex);
+  var pw_qualification = check_Qualification(inp_password, 5, 15, regex);
+
+  if (!un_qualification || !pw_qualification) {
+    if (!un_qualification) { alert("입력하신 username이 유효하지 않습니다.\n5~15 길이의 영문, 숫자, 특수문자(!@#$%^&)의 조합으로 작성해주세요"); }
+    if (!pw_qualification) { alert("입력하신 password가 유효하지 않습니다.\n5~15 길이의 영문, 숫자, 특수문자(!@#$%^&)의 조합으로 작성해주세요"); }
+    event.preventDefault();
+  } else {
+    password = SHA256(inp_password)
     document.getElementById("password").value = password
   }
+}
+
+function check_Qualification(value, min, max, regex) {
+  return value.length >= min && value.length <= max && regex.test(value);
+}
 
   function SHA256(s){
    var chrsz = 8;

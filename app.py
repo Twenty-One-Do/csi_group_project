@@ -89,8 +89,6 @@ def login():
                 }
         }
 
-        print(data.get('password'))
-
         result = search_query_execute(cur, select_queries)['Members']
         if result == [None]:
             return render_template(template_name_or_list="login.html", error_message="Password not match")
@@ -121,7 +119,7 @@ def register():
         return render_template("register.html", data=context)
     elif request.method == 'POST':
         username = request.form['username']
-        pw = request.form['pw']
+        pw = request.form['password']
         search_query = {
             'user':{
                 'table': 'Members',
@@ -154,7 +152,6 @@ def leaderboard():
                 ORDER BY Posts.consecutive_cnt DESC
     """)  # Members에 있는 username을 id라는 공통키 활용 내부 조인, Posts.consecutive_cnt 내림차순 정렬
     leaderboard_data = cur.fetchall()  # 해당 리스트 반환
-    print(leaderboard_data)
     leaderboard_message = []
 
     rank = 1
