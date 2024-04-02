@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, session
+from flask import Flask, flash, render_template, request, session, redirect, url_for
 from util import db_initialization, add_sample, search_query_execute
 import requests
 import sqlite3
 
 app = Flask(__name__)
+app.secret_key = 'csi_project'
 connection = sqlite3.connect('database.db', check_same_thread=False)
 
 cur = connection.cursor()
@@ -20,7 +21,7 @@ def home():
             'condition': 'date(reg_date) = date(CURRENT_DATE)'},
     }
     context = search_query_execute(cur, search_queries)
-    
+
     return render_template("main.html", data=context)
 
 
@@ -75,10 +76,35 @@ def login():
     return render_template("login.html", data=context)
 
 
-@app.route("/register")
+@app.route("/register", methods = ['GET', 'POST'])
 def register():
     context = None
-    return render_template("register.html", data=context)
+    if request.method == 'GET':
+        return render_template("register.html", data=context)
+    elif request.method == 'POST':
+        username = request.form['username']
+        pw = request.form['pw']
+        search_query = {
+            'user':{
+                'table': 'Members',
+                'attributes': ['username'],
+                'condition': "username == '{}'".format(username)
+            }
+        }
+
+        if search_query_execute(cur, search_query)['user'][0] is not None:
+            flash("이미 존재하는 username입니다!")
+            return redirect(url_for('register')) 
+        else:
+            register_query = '''
+                            INSERT INTO Members (username, password, admin, reg_date, last_acc_date, is_deleted)
+                            VALUES ('{}', '{}', 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0)
+                            '''.format(username, pw)
+            cur.execute(register_query)
+            connection.commit()
+            flash("회원가입이 완료되었습니다! 다시 로그인해주세요")
+            return redirect(url_for('home'))
+
 
 
 @app.route("/leaderboard")
