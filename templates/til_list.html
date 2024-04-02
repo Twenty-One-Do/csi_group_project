@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TIL_List</title>
-  <link href="../static/til_list_style.css" rel = "stylesheet" type="text/css" />
+  <link href="../static/styles.css" rel = "stylesheet" type="text/css" />
   <link href="../static/til_list.css" rel="stylesheet" type="text/css" />
 </head>
   <body>
@@ -31,13 +31,19 @@
       </div>
     </div>
     <!-- ---------------------------------------------------------------------------------------- -->
-    <div class="search">
-      <input type="text" class="til_search">
-      <button type="submit">검색
-      </button>
+    <div class="search_box">
+        <input type="text" >
+        <button type="submit" class="submit_btn">Search</button>
+    </div>
+    <div class="til_lists">
+      {% for til in data['lists'] %}
+      <div class="til_box">
+        <p>{{ til['thumbnail'] }}</p> 
+        <br><a href="post/{{ til['title'] }}">{{ til['title'] }}</a> 
+      </div>
+      {% endfor %}
     </div>
     
-    <div class ="body"></div>
     <!-- ---------------------------------------------------------------------------------------- -->
     <footer>
       Team CSI
