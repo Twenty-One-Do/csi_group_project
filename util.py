@@ -65,11 +65,18 @@ def search_query_execute(cur, queries):#types, table, attributes, condition):
     for k in context.keys():
 
         attributes = ', '.join(queries[k]['attributes'])
-        query = '''
-                SELECT {}
-                FROM {}
-                WHERE {};
-                '''.format(attributes, queries[k]['table'], queries[k]['condition'])
+        if queries[k]['condition'] is not None :
+            query = '''
+                    SELECT {}
+                    FROM {}
+                    WHERE {};
+                    '''.format(attributes, queries[k]['table'], queries[k]['condition'])
+        else :
+            query = '''
+                    SELECT {}
+                    FROM {};
+                    '''.format(attributes, queries[k]['table'])
+
         result = cur.execute(query)
         result = result.fetchall()
         for res in result:
