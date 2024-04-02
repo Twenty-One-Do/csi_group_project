@@ -1,99 +1,29 @@
+@import url("color.css");
+
 body {
     font-family: Arial, sans-serif;
     height: 100%;
     margin: 0;
     padding: 0;
-    background-color: #afafaf;
+    background-color: var(--middle-color);
 }
 
 .navbar {
-    background-color: #333;
-    color: white;
+    background-color: var(--accent-color);
+    color: var(--normal-color);
     padding: 10px 20px;
     display: flex;
     justify-content: space-between;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
-}
-
-
-.card {
-    background-color: #ffffff;
-    color: rgb(0, 0, 0);
-    padding: 20px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
-}
-
-.card h3 {
-    margin-top: 0;
-}
-
-.card img {
-    max-width: 100%;
-    margin-bottom: 10px;
-}
-
-.card-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    grid-gap: 20px;
-}
-
 footer {
-    background-color: #333;
-    color: white;
+    background-color: var(--accent-color);
+    color: var(--normal-color);
     text-align: center;
     padding: 10px 20px;
     position: fixed;
     bottom: 0;
     width: 100%;
-}
-
-
-.post-container {
-    background-color: white;
-    width: 100%;
-    height: 100%;
-    margin: 20px;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, .1);
-}
-
-.post-contents {
-    margin-bottom: 20px;
-}
-
-.post-title {
-    font-size: 24px;
-    margin-bottom: 8px;
-}
-
-.post-meta {
-    margin-bottom: 16px;
-    color: #555;
-    font-size: 14px;
-}
-
-.post-contents {
-    margin-bottom: 20px;
-}
-
-.like-count {
-    font-size: 14px;
-    margin-bottom: 8px;
-}
-
-.comments {
-    background: #f0f0f0;
-    padding: 10px;
-    margin: 10px 0;
 }
 
 /* nav바 스타일 입니다 */
@@ -118,15 +48,15 @@ li {
 a {
     display: block;
     padding: 5px;
-    color: white;
+    color: var(--normal-color);
     text-decoration: none;
 }
 
 /* 카테고리 메뉴 호버 설정 */
-/* 
+
 .navbar>div>ul>li>a:hover {
-    background-color: darkgray;
-} */
+    color: var(--middle-color);
+} 
 
 .dropdown {
     display: none;
@@ -144,9 +74,9 @@ li:hover .dropdown {
 
 .dropdown li a {
     padding: 10px;
-    color: white;
-    background-color: black;
-    border-bottom: 1px solid #ddd;
+    color: var(--normal-color);
+    background-color: var(--accent-color);
+    border-bottom: 1px solid var(--normal-color);
 }
 
 .dropdown li:last-child a {
@@ -154,5 +84,5 @@ li:hover .dropdown {
 }
 
 .dropdown li a:hover {
-    background-color: darkgray;
+    background-color: var(--middle-color);
 }
