@@ -4,6 +4,7 @@ def db_initialization(cur):
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username CHAR(25) NOT NULL UNIQUE,
         password CHAR(65) NOT NULL,
+        consecutive_cnt INTEGER DEFAULT 0,
         admin INTEGER NOT NULL DEFAULT 0,
         reg_date DATETIME DEFAULT CURRENT_TIMESTAMP,
         last_acc_date DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -19,8 +20,7 @@ def db_initialization(cur):
         user_id INTEGER,
         reg_date DATETIME DEFAULT CURRENT_TIMESTAMP,
         mod_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-        consecutive_cnt INTEGER DEFAULT 1,
-        like_cnt INTEGER DEFAULT 1,
+        like_cnt INTEGER DEFAULT 0,
         cnt INTEGER DEFAULT 1,
         thumbnail TEXT,
         FOREIGN KEY(user_id) REFERENCES Members(id)
@@ -43,13 +43,13 @@ def db_initialization(cur):
 
 def add_sample(connection, cur):
     cur.execute('''
-    INSERT INTO Members (username, password, admin, reg_date, last_acc_date, is_deleted)
+    INSERT INTO Members (username, password, consecutive_cnt, admin, reg_date, last_acc_date, is_deleted)
     VALUES
-    ('이혜민', 'hashed_password_1', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-    ('양승조', 'hashed_password_2', 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-    ('이원도', 'hashed_password_3', 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-    ('임현경', 'hashed_password_4', 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-    ('현유경', 'hashed_password_5', 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0);
+    ('이혜민', 'hashed_password_1', 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+    ('양승조', 'hashed_password_2', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+    ('이원도', 'hashed_password_3', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+    ('임현경', 'hashed_password_4', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+    ('현유경', 'hashed_password_5', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0);
     ''')
     cur.execute('''
     INSERT INTO Posts (title, thumbnail, like_cnt, user_id, reg_date, contents)

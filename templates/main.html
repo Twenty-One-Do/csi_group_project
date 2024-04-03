@@ -44,20 +44,20 @@
   <!-- ---------------------------------------------------------------------------------------- -->
 
   <div class="container">
-    <h2>Today's TIL List</h2>
+    <h2>Latest TIL List</h2>
     <div class="card-container">
-      {% for today_til in data['today_til'] %}
+      {% for latest_til in data['latest_til'][:3] %}
       <div class="til_card">
-        <div class="front" href="background-image: url(post/{{ today_til['id'] }})">
+        <div class="front" href="background-image: url(post/{{ latest_til['id'] }})">
           <!-- 앞면 내용 -->
-          <h3>{{ today_til['title'] }}</h3>
+          <h3>{{ latest_til['title'] }}</h3>
         </div>
         <div class="back">
           <!-- 뒷면 내용 -->
-          <p>{{ today_til['contents'] }}</p>
-          <p>Likes: {{ today_til['like_cnt'] }}</p>
-          <p>Posted by: {{ today_til['user_id'] }} on {{ today_til['reg_date'] }}</p>
-          <br><a href="post/{{ today_til['id'] }}">TIL 보러가기</a>
+          <p>{{ latest_til['contents'] }}</p>
+          <p>Likes: {{ latest_til['like_cnt'] }}</p>
+          <p>Posted by: {{ latest_til['user_id'] }} on {{ latest_til['reg_date'] }}</p>
+          <br><a href="post/{{ latest_til['id'] }}">TIL 보러가기</a>
         </div>
       </div>
       {% endfor %}

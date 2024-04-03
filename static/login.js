@@ -10,9 +10,7 @@ function login_qualification(event) {
 
   var un_qualification = inp_username.length == 0;
   var pw_qualification = inp_password.length == 0;
-  console.log(un_qualification)
-  console.log(pw_qualification)
-  setTimeout(() => console.log("after"), 3000);
+
   if (un_qualification || pw_qualification) {
     if (un_qualification) { alert("username을 입력해주세요"); }
     if (pw_qualification) { alert("password를 입력해주세요"); }
