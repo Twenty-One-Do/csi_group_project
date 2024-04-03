@@ -10,7 +10,7 @@
 </head>
 
 <body>
-
+  <script src="../static/write.js"></script>
   <div class="navbar">
     <div class="left">
       <ul>
@@ -34,8 +34,8 @@
   </div>
 
   <!-- ---------------------------------------------------------------------------------------- -->
-  <form action="/create_post" method="POST" class="form_container" >
-    <input class="title_inp" type="text" placeholder="제목을 입력하세요">
+  <form action="write" method="POST" class="form_container" >
+    <input class="title_inp" name="title" id="title" type="text" placeholder="제목을 입력하세요">
     <textarea class="form-control" name="content" id="content" rows="10">{{ '' }}</textarea>
     <div class="btn_container">
       <button type="submit" class="post_btn">TIL 등록</button>
