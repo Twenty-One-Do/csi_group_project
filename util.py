@@ -61,7 +61,34 @@ def add_sample(connection, cur):
     connection.commit()
 
 
-def search_query_execute(cur, queries, offset, limit):
+def search_query_execute(cur, queries):
+    context = {key: [] for key in queries.keys()}
+
+    for k in context.keys():
+
+        attributes = ', '.join(queries[k]['attributes'])
+        if queries[k]['condition'] is not None :
+            query = '''
+                    SELECT {}
+                    FROM {}
+                    WHERE {}
+                    '''.format(attributes, queries[k]['table'], queries[k]['condition'])
+        else :
+            query = '''
+                    SELECT {}
+                    FROM {}
+                    '''.format(attributes, queries[k]['table'])
+
+        result = cur.execute(query)
+        result = result.fetchall()
+        for res in result:
+            context[k].append(
+                {key: val for key, val in zip(queries[k]['attributes'], res)})
+        if len(context[k]) == 0:
+            context[k].append(None)
+    return context
+
+def search_query_execute_1(cur, queries, offset, limit):
     context = {key: [] for key in queries.keys()}
 
     for k in context.keys():

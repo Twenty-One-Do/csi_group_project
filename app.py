@@ -1,7 +1,8 @@
 from flask import Flask, flash, render_template, request, session, redirect, url_for
-from util import db_initialization, add_sample, search_query_execute, count_total_items
+from util import db_initialization, add_sample, search_query_execute, search_query_execute_1, count_total_items
 from datetime import datetime, timedelta
-from flask_paginate import Pagination, get_page_args
+from math import ceil
+from flask_paginate import Pagination, get_page_parameter
 import requests
 import sqlite3
 
@@ -44,30 +45,38 @@ def my_page():
     return render_template("my_page.html", data=context)
 
 
-@app.route("/til_list")
-def til_list():
-    # 페이지네이션
-    page = request.args.get('page',type= int, default=1)
-    per_page = 2
-    # 본문
-    filter_list = {
-        'search': {
-            'table': 'Posts',
-            'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
-            'condition': None},
-        'lists': {
-            'table': 'Posts',
-            'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
-            'condition': None},
-    }
-    offset = (page - 1) * per_page
-    limit = per_page
-    context = search_query_execute(cur, filter_list, offset = offset, limit = limit)
-    print(context)
-    total_items = count_total_items(cur, filter_list)
+# @app.route("/til_list")
+# def til_list():
+#     print("Til_list01")
+#     # 페이지네이션
+#     page = request.args.get(get_page_parameter(),type= int, default=1)
+#     per_page = 8
+#     offset = (page - 1) * per_page
+#     limit = per_page
+#     # 본문
+#     filter_list = {
+#         'search': {
+#             'table': 'Posts',
+#             'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
+#             'condition': None},
+#         'lists': {
+#             'table': 'Posts',
+#             'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
+#             'condition': None},
+#     }
+#     print("Til_list02")
 
-    pagination = Pagination(page=page, total= total_items, per_page=per_page)
-    return render_template("til_list.html", data=context, pagination = pagination)
+#     context = search_query_execute_1(cur, filter_list, offset = offset, limit = limit)
+#     print("Til_list03",context)
+
+#     total_items = count_total_items(cur, filter_list)
+#     if total_items % per_page == 0 :
+#         total_pages = total_items // per_page
+#     else :
+#         total_pages = (total_items// per_page) + 1
+
+#     pagination = Pagination(page=page, total=total_items, per_page=per_page, total_pages=total_pages)
+#     return render_template("til_list.html", data=context, pagination = pagination)
 
 
 @app.route("/post/<post_id>")
