@@ -1,6 +1,6 @@
 from flask import Flask, flash, render_template, request, session, redirect, url_for
 from util import db_initialization, add_sample, search_query_execute
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
 import sqlite3
 
@@ -12,6 +12,15 @@ cur = connection.cursor()
 
 db_initialization(cur)
 # add_sample(connection, cur)  # 실행 후 주석처리
+
+# Session 관련 변수 지정
+# Test for 15 Seconds
+SESSION_TIMEOUT: int = 15
+
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
+    app.permanent_session_lifetime = timedelta(seconds=SESSION_TIMEOUT)
 
 
 @app.route("/")
@@ -75,6 +84,7 @@ def write():
 
 @app.route(rule="/login", methods=["GET", "POST"])
 def login():
+
     if request.method == "GET":
         return render_template(template_name_or_list="login.html")
 
@@ -91,10 +101,11 @@ def login():
 
         result = search_query_execute(cur, select_queries)['Members']
         if result == [None]:
-            return render_template(template_name_or_list="login.html", error_message="Password not match")
+            return redirect(url_for('login'))
 
         # 최근 로그인 시간 업데이트
         user_id = result[0]['id']
+        username = result[0]['username']
         login_time: datetime = datetime.now()
         login_time_str: str = login_time.strftime(
             "%Y-%m-%d %H:%M:%S").split(".")[0]
@@ -105,10 +116,11 @@ def login():
         # 로그인 시간 업데이트 끝
 
         # 세션 처리 및 user_id 보유를 위한 context 처리
-        # 세션 사용 방법 확인
-        context = {
-            "id": user_id
-        }
+        if "meminfo" not in session:
+            session["meminfo"] = {
+                "id": user_id,
+                "name": username
+            }
 
         return redirect(url_for(endpoint="home"))
 
