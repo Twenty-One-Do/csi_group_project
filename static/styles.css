@@ -32,7 +32,12 @@ footer {
     color: var(--normal-color);
     text-align: left;
     padding: 10px 20px;
-    position: fixed;
+
+    padding-top: 150px;
+    margin-top: 160px;
+    position: relative;
+    transform: translatY(-100%);
+
     bottom: 0;
     width: 100%;
 }

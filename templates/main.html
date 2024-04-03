@@ -32,7 +32,7 @@
         <li><a href="#">My</a>
           <ul class="dropdown">
             <li><a href="/my_page">내 정보</a></li>
-            <li><a href="/til_list['user_id']">내 TIL</a></li>
+            <li><a href="/til_list/1&{{ data['session']['meminfo']['id'] }}">내 TIL</a></li>
             <li><a href="/write">글 작성</a></li>
             {% if 'meminfo' in data['session'] %}
             <li><a href="/logout">로그아웃</a></li>
@@ -54,7 +54,11 @@
       <div class="til_card">
         <div class="front">
           <!-- 앞면 내용 -->
-          <img src="{{ latest_til['thumbnail'] }}" class="thumbnail">
+          {% if latest_til['thumbnail'] != None %}
+            <img src="{{ latest_til['thumbnail'] }}" class="thumbnail">
+          {% else %}
+            <img src="../static/image/basic_image.png" class="thumbnail">
+          {% endif %}
           <h3>{{ latest_til['title'] }}</h3>
         </div>
         <div class="back">

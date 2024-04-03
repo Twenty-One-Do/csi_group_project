@@ -121,22 +121,46 @@ def my_page():
     return render_template(template_name_or_list="my_page.html", data=context)
 
 
+@app.route('/til_list', defaults={'page_num': '1'})
+@app.route('/til_list/<page_num>')
+def til_list(page_num):
+    if '&' in page_num:
+        page_num = page_num.split('&')
+        page_num, condition = int(page_num[0]), page_num[1]
+    else:
+        page_num, condition = int(page_num), None
 
-@app.route("/til_list")
-def til_list():
-    filter_list = {
-        'search': {
-            'table': 'Posts',
-            'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
-            'condition': None},
-        'lists': {
-            'table': 'Posts',
-            'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
-            'condition': None},
-    }
-    context = search_query_execute(cur, filter_list)
-    context['session'] = session
-    return render_template("til_list.html", data=context)
+    interval = 10
+    if condition is not None:
+        page_num  = 1
+        interval = 10000
+        til_list = {
+            'til_list': {
+                'table': 'Posts',
+                'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
+                'condition': f'user_id = {condition}'}
+        }
+    else:
+        til_list = {
+            'til_list': {
+                'table': 'Posts',
+                'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
+                'condition': condition}
+        }
+    context = search_query_execute(cur, til_list)
+    if context['til_list'][0] is not None:
+        til_list = sorted(context['til_list'], key=lambda x: x['reg_date'], reverse=True)
+        num_til = len(til_list)
+        start, end = interval*(page_num-1), min(num_til,interval*(page_num))
+        context['til_list'] = til_list[start:end]
+        context['session'] = session
+        context['now_page'] = page_num
+        context['max_page'] = num_til//interval
+        return render_template("til_list.html", data=context)
+    else:
+        flash("해당 유저의 게시글이 없습니다!")
+        return redirect(url_for("til_list"))
+
 
 
 @app.route("/post/<post_id>")
