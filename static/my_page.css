@@ -55,16 +55,38 @@ th, td {
     text-align: left;
 }
 
-th {
+th.key {
     border-right: solid;
     border-color: var(--table-intbrd-color);
 
     width: 200px;
 }
 
-td {
+td.pwKey {
+    width: 150px;
+}
+
+tr.pwVal {
+    width: 200px
+}
+
+td.value {
     padding-left: 20px;
     width: 400px
+}
+
+button.btnInner {
+    background-color: var(--normal-color);
+    border-color: var(--accent-color);
+    border-radius: 5px;
+    margin-right: 10px;
+
+    height: 30px;
+}
+
+button#memOutHTMLChange{
+    color: red;
+    font-weight: 900;
 }
 
 span.pageTitle{
@@ -72,3 +94,10 @@ span.pageTitle{
     font-weight: 1000;
 }
 
+span.smlTxt{
+    font-size: 10pt;
+}
+
+span.red {
+    color: red;
+}

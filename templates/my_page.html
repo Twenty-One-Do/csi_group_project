@@ -1,6 +1,12 @@
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <script>
+      alert("{{ messages[-1] }}")
+    </script>
+  {% endif %}
+{% endwith %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,9 +14,8 @@
   <link href="../static/styles.css" rel="stylesheet" type="text/css" />
   <link href="../static/my_page.css" rel="stylesheet" type="text/css" />
 </head>
-
 <body>
-
+  <script src="../static/my_page.js"></script>
   <div class="navbar">
     <div class="left">
       <ul>
@@ -44,11 +49,11 @@
       <table id="info">
         <tr>
           <th class="key"><span class="tableKey">계정 ID</span></th>
-          <td class="value">{{ data.id }}</td>
+          <td class="value">{{ data.username }}</td>
         </tr>
         <tr>
-          <th class="key"><span class="tableKey">현재 작성 글 수</span></th>
-          <td class="value">{{ data.all_post_cnt }}</td>
+          <th class="key"><span class="tableKey">가입일</span></th>
+          <td class="value">{{ data.reg_date }}</td>
         </tr>
         <tr>
           <th class="key"><span class="tableKey">연속 작성일</span></th>
@@ -60,8 +65,14 @@
         </tr>
         <tr>
           <th class="key"><span class="tableKey">비밀번호</span></th>
-          <td class="value">
-            <button> 비밀번호 변경</button>
+          <td id="changePW" class="value">
+            <button id="pwHtmlChange" class="btnInner"> 비밀번호 변경</button>
+          </td>
+        </tr>
+        <tr>
+          <th class="key"><span class="tableKey">회원 탈퇴</span></th>
+          <td id="memOut" class="value">
+            <button id="memOutHTMLChange" class="btnInner"> 회원 탈퇴</button>
           </td>
         </tr>
       </table>
