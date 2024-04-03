@@ -45,11 +45,11 @@ def add_sample(connection, cur):
     cur.execute('''
     INSERT INTO Members (username, password, consecutive_cnt, admin, reg_date, last_acc_date, is_deleted)
     VALUES
-    ('이혜민', 'hashed_password_1', 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-    ('양승조', 'hashed_password_2', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-    ('이원도', 'hashed_password_3', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-    ('임현경', 'hashed_password_4', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-    ('현유경', 'hashed_password_5', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0);
+    ('이혜민', 'hashed_password_1', 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+    ('양승조', 'hashed_password_2', 3, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+    ('이원도', 'hashed_password_3', 2, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+    ('임현경', 'hashed_password_4', 4, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+    ('현유경', 'hashed_password_5', 5, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0);
     ''')
     cur.execute('''
     INSERT INTO Posts (title, thumbnail, like_cnt, user_id, reg_date, contents)
@@ -67,13 +67,13 @@ def search_query_execute(cur, queries):
     for k in context.keys():
 
         attributes = ', '.join(queries[k]['attributes'])
-        if queries[k]['condition'] is not None :
+        if queries[k]['condition'] is not None:
             query = '''
                     SELECT {}
                     FROM {}
                     WHERE {};
                     '''.format(attributes, queries[k]['table'], queries[k]['condition'])
-        else :
+        else:
             query = '''
                     SELECT {}
                     FROM {};

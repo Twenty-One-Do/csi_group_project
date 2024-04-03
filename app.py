@@ -3,6 +3,8 @@ from util import db_initialization, add_sample, search_query_execute
 from datetime import datetime, timedelta
 import requests
 import sqlite3
+from math import ceil
+from flask_paginate import Pagination, get_page_parameter
 
 app = Flask(__name__)
 app.secret_key = 'csi_project'
@@ -12,7 +14,6 @@ cur = connection.cursor()
 
 db_initialization(cur)
 # add_sample(connection, cur)  # 실행 후 주석처리
-
 # Session 관련 변수 지정
 # Test for 15 Seconds
 SESSION_TIMEOUT: int = 30
@@ -173,16 +174,22 @@ def register():
 
 @app.route("/leaderboard")
 def leaderboard():
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+    per_page = 1
+
+    offset = (page-1) * per_page  # 각 페이지 start점
+
     cur.execute(""" 
-                SELECT DISTINCT Members.username, Posts.consecutive_cnt
+                SELECT DISTINCT Members.username, Members.consecutive_cnt
                 FROM Members
-                INNER JOIN Posts ON Members.id = Posts.user_id
-                ORDER BY Posts.consecutive_cnt DESC
-    """)  # Members에 있는 username을 id라는 공통키 활용 내부 조인, Posts.consecutive_cnt 내림차순 정렬
-    leaderboard_data = cur.fetchall()  # 해당 리스트 반환
+                ORDER BY Members.consecutive_cnt DESC
+                LIMIT ? OFFSET ? 
+    """, (per_page, offset))  # limit 개수 제한, offset: 시작위치 설정
+    leaderboard_data = cur.fetchall()
     leaderboard_message = []
 
-    rank = 1
+    rank = offset+1
+
     for row in leaderboard_data:
         username = row[0]
         consecutive_cnt = row[1]
@@ -191,7 +198,18 @@ def leaderboard():
         leaderboard_message.append(message)
         rank += 1
 
-    return render_template("leaderboard.html", data=leaderboard_message)
+    cur.execute("SELECT COUNT(*) FROM Members;")
+    total_members_count = cur.fetchone()[0]  # 첫번째행, 첫번째 열 --> 전체 회원수 가져오기
+    total_pages = ceil(total_members_count/per_page)
+
+    pagination = {
+        'page': page,
+        'per_page': per_page,
+        'total': total_members_count,
+        'total_pages': total_pages
+    }
+
+    return render_template("leaderboard.html", data=leaderboard_message, pagination=pagination)
 
 
 if __name__ == "__main__":
