@@ -45,38 +45,38 @@ def my_page():
     return render_template("my_page.html", data=context)
 
 
-# @app.route("/til_list")
-# def til_list():
-#     print("Til_list01")
-#     # 페이지네이션
-#     page = request.args.get(get_page_parameter(),type= int, default=1)
-#     per_page = 8
-#     offset = (page - 1) * per_page
-#     limit = per_page
-#     # 본문
-#     filter_list = {
-#         'search': {
-#             'table': 'Posts',
-#             'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
-#             'condition': None},
-#         'lists': {
-#             'table': 'Posts',
-#             'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
-#             'condition': None},
-#     }
-#     print("Til_list02")
+@app.route("/til_list")
+def til_list():
+    # print("Til_list01")
+    # 페이지네이션
+    page = request.args.get(get_page_parameter(),type= int, default=1)
+    per_page = 2
+    offset = (page - 1) * per_page
+    limit = per_page
+    # 본문
+    filter_list = {
+        'search': {
+            'table': 'Posts',
+            'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
+            'condition': None},
+        'lists': {
+            'table': 'Posts',
+            'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
+            'condition': None},
+    }
+    # print("Til_list02")
 
-#     context = search_query_execute_1(cur, filter_list, offset = offset, limit = limit)
-#     print("Til_list03",context)
+    context = search_query_execute_1(cur, filter_list, offset = offset, limit = limit)
+    # print("Til_list03",context)
 
-#     total_items = count_total_items(cur, filter_list)
-#     if total_items % per_page == 0 :
-#         total_pages = total_items // per_page
-#     else :
-#         total_pages = (total_items// per_page) + 1
+    total_items = count_total_items(cur, filter_list)
+    if total_items % per_page == 0 :
+        total_pages = total_items // per_page
+    else :
+        total_pages = (total_items// per_page) + 1
 
-#     pagination = Pagination(page=page, total=total_items, per_page=per_page, total_pages=total_pages)
-#     return render_template("til_list.html", data=context, pagination = pagination)
+    pagination = Pagination(page=page, total=total_items, per_page=per_page, total_pages=total_pages)
+    return render_template("til_list.html", data=context, pagination = pagination)
 
 
 @app.route("/post/<post_id>")
