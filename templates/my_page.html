@@ -34,7 +34,43 @@
   </div>
 
   <!-- ---------------------------------------------------------------------------------------- -->
+<div class="pageBody">
+  <div class="center">
+    <div id="pageTitle">
+      <span class="pageTitle">마이 페이지</span>
+    </div>
+    <hr>
+    <div id="printInfo">
+      <table id="info">
+        <tr>
+          <th class="key"><span class="tableKey">계정 ID</span></th>
+          <td class="value">{{ data.id }}</td>
+        </tr>
+        <tr>
+          <th class="key"><span class="tableKey">현재 작성 글 수</span></th>
+          <td class="value">{{ data.all_post_cnt }}</td>
+        </tr>
+        <tr>
+          <th class="key"><span class="tableKey">연속 작성일</span></th>
+          <td class="value">{{ data.consecutive_cnt }}</td>
+        </tr>
+        <tr>
+          <th class="key"><span class="tableKey">마지막 로그인</span></th>
+          <td class="value">{{ data.last_acc_date }}</td>
+        </tr>
+        <tr>
+          <th class="key"><span class="tableKey">비밀번호</span></th>
+          <td class="value">
+            <button> 비밀번호 변경</button>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div id="empty">
 
+    </div>
+  </div>
+</div>
   <!-- ---------------------------------------------------------------------------------------- -->
 
   <footer>

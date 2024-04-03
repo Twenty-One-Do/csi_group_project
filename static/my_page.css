@@ -1,1 +1,74 @@
 @import url("color.css");
+
+table{
+    --table-intbrd-color: #eeeeee;
+}
+
+div.pageBody {
+    height: 70vh;
+}
+
+div.center {
+    background-color: var(--normal-color);
+
+    margin-top: 20px;
+    margin-left: 5vw;
+
+    width: 90vw;
+    height: 68vh;
+}
+
+div#pageTitle{
+    width: 88vw;
+    height: 5vh;
+
+    padding-left: 2vw;
+    padding-down: 10px;
+    padding-top: 10px;
+}
+
+div#printInfo{
+    padding-left: 1vw;
+    padding-top: 2vh;
+    height: 50vh;
+}
+
+div#empty{
+    height: 8vh;
+}
+
+table#info{
+    margin-left: 1vw;
+    width: 70%;
+    min-width: 400px;
+    height: 90%;
+    min-height: 90%;
+}
+
+th, td {
+    border: none;
+    border-bottom: solid;
+    border-color: var(--table-intbrd-color);
+    border-weight: 1px;
+
+    padding-left: 10px;
+    text-align: left;
+}
+
+th {
+    border-right: solid;
+    border-color: var(--table-intbrd-color);
+
+    width: 200px;
+}
+
+td {
+    padding-left: 20px;
+    width: 400px
+}
+
+span.pageTitle{
+    font-size: 20pt;
+    font-weight: 1000;
+}
+
