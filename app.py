@@ -15,12 +15,13 @@ db_initialization(cur)
 
 # Session 관련 변수 지정
 # Test for 15 Seconds
-SESSION_TIMEOUT: int = 15
+SESSION_TIMEOUT: int = 30
+
 
 @app.before_request
 def make_session_permanent():
     session.permanent = True
-    app.permanent_session_lifetime = timedelta(seconds=SESSION_TIMEOUT)
+    app.permanent_session_lifetime = timedelta(minutes=SESSION_TIMEOUT)
 
 
 @app.route("/")
@@ -101,6 +102,7 @@ def login():
 
         result = search_query_execute(cur, select_queries)['Members']
         if result == [None]:
+            flash("계정 정보가 일치하지 않습니다.")
             return redirect(url_for('login'))
 
         # 최근 로그인 시간 업데이트
