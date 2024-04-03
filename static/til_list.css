@@ -16,8 +16,12 @@
 }
 
 .til_lists {
+    display: flex;
+}
+
+.til_box {
     justify-content: center;
-    width: 200px;
+    width: 20%;
     height: 250px;
     border-radius: 10px;
     text-align: center;
@@ -27,4 +31,8 @@
     padding: 20px;
     margin: 20px;
 
+}
+
+.page_num {
+    color: var(--accent-color);
 }

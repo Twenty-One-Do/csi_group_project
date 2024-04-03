@@ -1,6 +1,7 @@
 from flask import Flask, flash, render_template, request, session, redirect, url_for
 from util import db_initialization, add_sample, search_query_execute
 from datetime import datetime, timedelta
+from flask_paginate import Pagination, get_page_args
 import requests
 import sqlite3
 
@@ -45,6 +46,10 @@ def my_page():
 
 @app.route("/til_list")
 def til_list():
+    # 페이지네이션
+    page = request.args.get('page',type= int, default=1)
+    per_page = 8
+    
     filter_list = {
         'search': {
             'table': 'Posts',
@@ -55,9 +60,15 @@ def til_list():
             'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
             'condition': None},
     }
-    context = search_query_execute(cur, filter_list)
+    
+    offset = (page - 1) * per_page
+    limit = per_page
+    context = search_query_execute(cur, filter_list, offset = offset, limit = limit)
 
-    return render_template("til_list.html", data=context)
+    total_items = count_total_items(cur, filter_list)
+
+    Pagination = Pagination(page=page, total= total_items, per_page=per_page)
+    return render_template("til_list.html", data=context, pagination = pagination)
 
 
 @app.route("/post/<post_id>")
