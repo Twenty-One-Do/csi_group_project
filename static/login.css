@@ -78,7 +78,7 @@ input.loginInput{
 span{
   color: var(--btn-color);
   font-size: 20pt;
-  font-family: serif;
+  /* font-family: serif; */
   font-weight: 1000;
 }
 
