@@ -1,9 +1,9 @@
 {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <script>
-      alert("{{ messages[-1] }}")
-    </script>
-  {% endif %}
+{% if messages %}
+<script>
+  alert("{{ messages[-1] }}")
+</script>
+{% endif %}
 {% endwith %}
 
 <!DOCTYPE html>
@@ -48,8 +48,9 @@
     <div class="card-container">
       {% for latest_til in data['latest_til'][:3] %}
       <div class="til_card">
-        <div class="front" href="background-image: url(post/{{ latest_til['id'] }})">
+        <div class="front">
           <!-- 앞면 내용 -->
+          <img src="{{ latest_til['thumbnail'] }}" class="thumbnail">
           <h3>{{ latest_til['title'] }}</h3>
         </div>
         <div class="back">
@@ -68,8 +69,14 @@
 
   <footer>
     Team CSI
-    <a href="https://github.com/luna-negra/csi_group_project/tree/main" target="_blank">github</a>
-    <a href="https://teamsparta.notion.site/1-CSI-6f9c97ddc53348598f701eb6f7796eb3" target="_blank">notion</a>
+
+    <a href="https://github.com/luna-negra/csi_group_project/tree/main" target="_blank">
+      <img src="{{ url_for('static', filename='image/github-logo.png') }}"> Github
+    </a>
+    <a href="https://teamsparta.notion.site/1-CSI-6f9c97ddc53348598f701eb6f7796eb3" target="_blank"
+      rel="noopener noreferrer">
+      <img src="{{ url_for('static', filename='image/notion-logo.png') }}"> Notion
+    </a>
   </footer>
 
 </body>

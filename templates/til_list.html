@@ -1,55 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TIL_List</title>
-  <link href="../static/styles.css" rel = "stylesheet" type="text/css" />
+  <link href="../static/styles.css" rel="stylesheet" type="text/css" />
   <link href="../static/til_list.css" rel="stylesheet" type="text/css" />
 </head>
-  <body>
-  
-    <div class="navbar">
-      <div class="left">
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/til_list">TIL</a></li>
-          <li><a href="/leaderboard">Leaderboard</a></li>
-        </ul>
-      </div>
-      <div class="right">
-        <ul>
-          <li><a href="#">My</a>
-            <ul class="dropdown">
-              <li><a href="/my_page">내 정보</a></li>
-              <li><a href="/til_list['user_id']">내 TIL</a></li>
-              <li><a href="/write">글 작성</a></li>
-              <li><a href="/logout">로그아웃</a></li>
-            </ul>
-          </li>
-        </ul>
-      </div>
+
+<body>
+
+  <div class="navbar">
+    <div class="left">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/til_list">TIL</a></li>
+        <li><a href="/leaderboard">Leaderboard</a></li>
+      </ul>
     </div>
-    <!-- ---------------------------------------------------------------------------------------- -->
-    <div class="search_box">
-        <input type="text" >
-        <button type="submit" class="submit_btn">Search</button>
+    <div class="right">
+      <ul>
+        <li><a href="#">My</a>
+          <ul class="dropdown">
+            <li><a href="/my_page">내 정보</a></li>
+            <li><a href="/til_list['user_id']">내 TIL</a></li>
+            <li><a href="/write">글 작성</a></li>
+            <li><a href="/logout">로그아웃</a></li>
+          </ul>
+        </li>
+      </ul>
     </div>
-    <div class="til_lists">
-      {% for til in data['lists'] %}
-      <div class="til_box">
-        <p>{{ til['thumbnail'] }}</p> 
-        <br><a href="post/{{ til['title'] }}">{{ til['title'] }}</a> 
-      </div>
-      {% endfor %}
+  </div>
+  <!-- ---------------------------------------------------------------------------------------- -->
+  <div class="search_box">
+    <input type="text">
+    <button type="submit" class="submit_btn">Search</button>
+  </div>
+  <div class="til_lists">
+    {% for til in data['lists'] %}
+    <div class="til_box">
+      <p>{{ til['thumbnail'] }}</p>
+      <br><a href="post/{{ til['title'] }}">{{ til['title'] }}</a>
     </div>
-    
-    <!-- ---------------------------------------------------------------------------------------- -->
-    <footer>
-      Team CSI
-      <a href="https://github.com/luna-negra/csi_group_project/tree/main" target="_blank">github</a>
-      <a href="https://teamsparta.notion.site/1-CSI-6f9c97ddc53348598f701eb6f7796eb3" target="_blank">notion</a>
-    </footer>
-  </body>
+    {% endfor %}
+  </div>
+
+  <!-- ---------------------------------------------------------------------------------------- -->
+
+  <footer>
+    Team CSI
+
+    <a href="https://github.com/luna-negra/csi_group_project/tree/main" target="_blank">
+      <img src="{{ url_for('static', filename='image/github-logo.png') }}"> Github
+    </a>
+    <a href="https://teamsparta.notion.site/1-CSI-6f9c97ddc53348598f701eb6f7796eb3" target="_blank"
+      rel="noopener noreferrer">
+      <img src="{{ url_for('static', filename='image/notion-logo.png') }}"> Notion
+    </a>
+  </footer>
+</body>
 
 </html>
