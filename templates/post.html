@@ -41,11 +41,22 @@
       <div class="post-meta">
         Posted by {{ data['post'][0]['user_id'] }} on {{ data['post'][0]['reg_date'] }}
       </div>
-      <div class="post-contents">
-        {{ data['post'][0]['contents'] }}
+      <div class="post-contents", id="post_contents">
+        {{ data['post'][0]['contents'] | safe}}
       </div>
       <div class="like-count">
-        좋아요 {{ data['post'][0]['like_cnt'] }} 개
+        <div>
+          좋아요 {{ data['post'][0]['like_cnt'] }} 개
+        </div>
+        <div class="btn-container">
+          {% if 'meminfo' in data['session'] %}
+            <button onclick="like_btn_push()" type="submit" class="btn" id="like_btn">좋아요</button>
+            {% if data['session']['meminfo']['id'] == data['post'][0]['user_id'] %}
+              <button onclick="mod_btn_push()" type="submit" class="btn" id="mod_btn">수정</button>
+              <button onclick="del_btn_push()" type="submit" class="btn" id="del_btn">삭제</button>
+            {% endif %}
+          {% endif %}
+        </div>
       </div>
       <div class="comments">
         {% if data['comments'][0] == None %}
@@ -58,7 +69,6 @@
   </div>
 
   <!-- ---------------------------------------------------------------------------------------- -->
-
   <footer>
     Team CSI
 
@@ -70,6 +80,56 @@
       <img src="{{ url_for('static', filename='image/notion-logo.png') }}"> Notion
     </a>
   </footer>
+  <script>
+    const url = window.location.href;
+    const post_id = url.split('/').pop();
+    const not_like = getComputedStyle(document.documentElement).getPropertyValue('--middle-color').trim();
+    const like = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
+    const button = document.getElementById('like_btn');
+    
+    async function check_like(post_id) {
+      const response = await fetch('/like_check', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ post_id }),
+      });
+
+      if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
+        const result = await response.json();
+        return result.isLiked;
+      } else {
+        // 적절한 에러 처리 또는 기본값 반환
+        console.error('Non-JSON response received');
+        return false;
+      }
+    }
+
+    async function renewal_like_btn_color() {
+      const isLiked = await check_like(post_id);
+      if (isLiked) {
+        button.style.backgroundColor = like;
+      } else {
+        button.style.backgroundColor = not_like;
+      }
+    }
+
+    renewal_like_btn_color();
+
+    async function like_btn_push() {
+      const isLiked = await check_like(post_id);
+      await fetch('/push_like', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ post_id, isLiked }),
+      });
+
+      await renewal_like_btn_color();
+    }
+  </script>
 </body>
 
 </html>
