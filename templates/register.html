@@ -18,7 +18,7 @@
 </head>
 
 <body>
-
+  <script src="../static/register.js"></script>
   <div class="navbar">
     <div class="left">
       <ul>
@@ -42,15 +42,31 @@
   </div>
 
   <!-- ---------------------------------------------------------------------------------------- -->
-  <form action="register" method="POST", class="register_form">
-    <div class="inp_container">
-      id: <input type="text" name="username"/>
-      pw: <input type="password" name="pw"/>
+  <div id=center>
+    <div class="intro_title">
+      <span class="introText">TIL 게시판</span></div>
+    <div class="intro_title"><span class="introText">Sign Up</span></div>
+
+    <div class="loginForm">
+      <form action="register" method="POST", class="register_form">
+        <div class="loginInput">
+          <input type="text" name="username" id="username" class="loginInput" placeholder="username">
+        </div>
+        <div class="loginInput">
+          <input type="password" name="password" id="password" class="loginInput" placeholder="password">
+        </div>
+        <div class="loginInput">
+          <button class="btn" type="submit"><span class="btnText">Sign Up</span></button>
+        </div>
+      </form>
+      <hr>
+      <div class="signUp">
+        <form action="/login" method="GET">
+          <button type="submit" class="btnSignup"><span class="btnSignupText">이미 회원이신가요? 로그인하러 가기</span></button>
+        </form>
+      </div>
     </div>
-    <div class="btn_container">
-      <button type="submit" class="post_btn">회원가입</button>
-    </div>
-  </form>
+  </div>
   <!-- ---------------------------------------------------------------------------------------- -->
 
   <footer>
