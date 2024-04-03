@@ -61,7 +61,7 @@ def add_sample(connection, cur):
     connection.commit()
 
 
-def search_query_execute(cur, queries):
+def search_query_execute(cur, queries, offset, limit):
     context = {key: [] for key in queries.keys()}
 
     for k in context.keys():
@@ -71,13 +71,17 @@ def search_query_execute(cur, queries):
             query = '''
                     SELECT {}
                     FROM {}
-                    WHERE {};
-                    '''.format(attributes, queries[k]['table'], queries[k]['condition'])
+                    WHERE {}
+                    LIMIT {}
+                    OFFSET {};
+                    '''.format(attributes, queries[k]['table'], queries[k]['condition'], limit, offset)
         else :
             query = '''
                     SELECT {}
-                    FROM {};
-                    '''.format(attributes, queries[k]['table'])
+                    FROM {}
+                    LIMIT {}
+                    OFFSET {};
+                    '''.format(attributes, queries[k]['table'], limit, offset)
 
         result = cur.execute(query)
         result = result.fetchall()
@@ -87,3 +91,9 @@ def search_query_execute(cur, queries):
         if len(context[k]) == 0:
             context[k].append(None)
     return context
+
+def count_total_items(cur, filter_list) :
+    query = "SELECT count(*) FROM Posts"
+    cur.execute(query)
+    total_items = cur.fetchone()[0]
+    return total_items

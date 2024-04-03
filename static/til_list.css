@@ -7,6 +7,9 @@
     margin: 20px;
     width: 100%;
 }
+.input_box {
+    width: 500px;
+}
 
 .submit_btn {
     width: 100px;
@@ -17,6 +20,8 @@
 
 .til_lists {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
 .til_box {

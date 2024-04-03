@@ -34,13 +34,13 @@
   </div>
   <!-- ---------------------------------------------------------------------------------------- -->
   <div class="search_box">
-    <input type="text">
+    <input type="text" class="input_box">
     <button type="submit" class="submit_btn">Search</button>
   </div>
   <div class="til_lists">
     {% for til in data['lists'][:8] %}
     <div class="til_box">
-      <p>{{ til['thumbnail'] }}</p>
+      <img src="{{ til['thumbnail'] }}" alt="Thumbnail">
       <br><a href="post/{{ til['title'] }}">{{ til['title'] }}</a>
     </div>
     {% endfor %}
