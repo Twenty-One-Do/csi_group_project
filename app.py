@@ -47,7 +47,6 @@ def my_page():
 
 @app.route("/til_list")
 def til_list():
-    # print("Til_list01")
     # 페이지네이션
     page = request.args.get(get_page_parameter(),type= int, default=1)
     per_page = 2
@@ -64,10 +63,8 @@ def til_list():
             'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
             'condition': None},
     }
-    # print("Til_list02")
 
     context = search_query_execute_1(cur, filter_list, offset = offset, limit = limit)
-    # print("Til_list03",context)
 
     total_items = count_total_items(cur, filter_list)
     if total_items % per_page == 0 :
