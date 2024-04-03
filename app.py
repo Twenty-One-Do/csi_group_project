@@ -175,7 +175,7 @@ def register():
 @app.route("/leaderboard")
 def leaderboard():
     page = request.args.get(get_page_parameter(), type=int, default=1)
-    per_page = 1
+    per_page = 5
 
     offset = (page-1) * per_page  # 각 페이지 start점
 
@@ -210,6 +210,46 @@ def leaderboard():
     }
 
     return render_template("leaderboard.html", data=leaderboard_message, pagination=pagination)
+
+
+'''def leaderboard():
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+    per_page = 1
+
+    offset = (page-1) * per_page
+
+    cur.execute(""" 
+                SELECT DISTINCT Members.username, Members.consecutive_cnt
+                FROM Members
+                ORDER BY Members.consecutive_cnt DESC
+                LIMIT ? OFFSET ? 
+    """, (per_page, offset))  # limit 개수 제한, offset: 시작위치 설정
+    leaderboard_data = cur.fetchall()
+    leaderboard_message = []
+
+    rank = offset+1
+
+    for row in leaderboard_data:
+        username = row[0]
+        consecutive_cnt = row[1]
+
+        message = f"{rank}, 연속 {consecutive_cnt} 출석!"
+        leaderboard_message.append(message)
+        rank += 1
+
+    cur.execute("SELECT COUNT(*) FROM Members;")
+    total_members_count = cur.fetchone()[0]  # 첫번째행, 첫번째 열 --> 전체 회원수 가져오기
+    total_pages = ceil(total_members_count/per_page)
+
+    pagination = {
+        'page': page,
+        'per_page': per_page,
+        'total': total_members_count,
+        'total_pages': total_pages
+    }
+
+    return render_template("leaderboard.html", data=leaderboard_message, pagination=pagination)
+'''
 
 
 if __name__ == "__main__":
