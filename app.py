@@ -1,4 +1,4 @@
-from flask import Flask, flash, render_template, request, session, redirect, url_for
+from flask import Flask, flash, render_template, request, session, redirect, url_for, jsonify
 from util import db_initialization, add_sample, search_query_execute
 from datetime import datetime, timedelta
 import requests
@@ -33,7 +33,8 @@ def home():
             'condition': None},
     }
     context = search_query_execute(cur, search_queries)
-    context['latest_til'].sort(key=lambda x: x['reg_date'], reverse=True)
+    if context['latest_til'][0] is not None:
+        context['latest_til'].sort(key=lambda x: x['reg_date'], reverse=True)
     return render_template("main.html", data=context)
 
 
@@ -73,7 +74,7 @@ def post(post_id):
             'condition': 'post_id = {}'.format(post_id)},
     }
     context = search_query_execute(cur, search_queries)
-
+    context['session'] = session
     return render_template("post.html", data=context)
 
 
@@ -193,6 +194,46 @@ def leaderboard():
 
     return render_template("leaderboard.html", data=leaderboard_message)
 
+@app.route('/like_check', methods=['POST'])
+def like_check():
+    data = request.get_json()
+    user_id = str(session['meminfo']['id'])
+    post_id = data["post_id"]
+
+    search_query = {
+        'likes':{
+            "table": "Post_Like",
+            "attributes": ["id", "user_id", "post_id"],
+            "condition": f"user_id={user_id}"
+        }
+    }
+    user_likes = search_query_execute(cur, search_query)
+    liked = False
+    if user_likes['likes'][0] is not None:
+        for rec in user_likes['likes']:
+            if int(post_id) == rec['post_id']:
+                liked = True
+                break
+
+    response = {'isLiked': liked}
+
+    return jsonify(response)
+
+@app.route('/push_like', methods=['POST'])
+def push_like():
+    data = request.get_json()
+    user_id = str(session['meminfo']['id'])
+    post_id = data["post_id"]
+    liked = data["isLiked"]
+    if liked:
+        cur.execute(f"""DELETE FROM Post_Like WHERE user_id = {user_id} AND post_id = {post_id}""")
+        cur.execute(f"""UPDATE Posts SET like_cnt= like_cnt-1 WHERE id= {post_id}""")
+        connection.commit()
+    else:
+        cur.execute(f"""INSERT INTO Post_Like (user_id, post_id) VALUES ({user_id}, {post_id})""")
+        cur.execute(f"""UPDATE Posts SET like_cnt= like_cnt+1 WHERE id= {post_id}""")
+        connection.commit()
+    return jsonify({'push':True})
 
 if __name__ == "__main__":
     app.run()

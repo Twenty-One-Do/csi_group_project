@@ -40,6 +40,16 @@ def db_initialization(cur):
     )
     ''')
 
+    cur.execute('''
+    CREATE TABLE IF NOT EXISTS Post_Like (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        post_id INTEGER,
+        FOREIGN KEY(user_id) REFERENCES Members(id),
+        FOREIGN KEY(post_id) REFERENCES Posts(id)
+    )
+    ''')
+
 
 def add_sample(connection, cur):
     cur.execute('''
