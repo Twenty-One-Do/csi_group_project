@@ -81,42 +81,6 @@
     const like = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
     const button = document.getElementById('like_btn');
     
-    // async function check_like(post_id){
-    //   const response = await fetch('/like_check', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({ post_id }),
-    //   });
-    //   const result = await response.json();
-    //   return result.isLiked;
-    // }
-
-    // async function renewal_like_btn_color(){
-    //   await check_like(post_id).then(isLiked => {
-    //     if (isLiked){
-    //       button.style.backgroundColor = like
-    //     }else{
-    //       button.style.backgroundColor = not_like
-    //     }
-    //   })
-    // };
-
-    // renewal_like_btn_color();
-
-    // async function like_btn_push(){
-    //   await check_like(post_id).then(isLiked => {
-    //     fetch('/push_like', {
-    //       method: 'POST',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //       body: JSON.stringify({ post_id, isLiked }),
-    //     });
-    //   })
-    //   await renewal_like_btn_color();
-    // };
     async function check_like(post_id) {
       const response = await fetch('/like_check', {
         method: 'POST',
