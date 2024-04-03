@@ -35,6 +35,7 @@ def home():
     context = search_query_execute(cur, search_queries)
     if context['latest_til'][0] is not None:
         context['latest_til'].sort(key=lambda x: x['reg_date'], reverse=True)
+    context['session'] = session
     return render_template("main.html", data=context)
 
 
@@ -115,6 +116,7 @@ def my_page():
         "reg_date": result[0]["reg_date"],
         "last_acc_date": result[0]["last_acc_date"],
     }
+    context['session'] = session
 
     return render_template(template_name_or_list="my_page.html", data=context)
 
@@ -133,7 +135,7 @@ def til_list():
             'condition': None},
     }
     context = search_query_execute(cur, filter_list)
-
+    context['session'] = session
     return render_template("til_list.html", data=context)
 
 
@@ -171,7 +173,7 @@ def write():
         VALUES ('{}', '{}', {})
         """.format(title, contents, user_id))
         connection.commit()
-        return redirect(url_for('til_list'))
+        return redirect(url_for('home'))
 
 
 @app.route(rule="/login", methods=["GET", "POST"])
@@ -255,7 +257,7 @@ def register():
             cur.execute(register_query)
             connection.commit()
             flash("회원가입이 완료되었습니다! 다시 로그인해주세요")
-            return redirect(url_for('home'))
+            return redirect(url_for('login'))
 
 
 @app.route("/leaderboard")
