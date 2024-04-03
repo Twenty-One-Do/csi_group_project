@@ -41,12 +41,12 @@ def til_list():
             'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
             'condition': None},
         'lists': {
-                'table' : 'Posts',
-                'attributes' :['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
-                'condition' : None},
+            'table': 'Posts',
+            'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
+            'condition': None},
     }
     context = search_query_execute(cur, filter_list)
-    
+
     return render_template("til_list.html", data=context)
 
 
@@ -98,7 +98,8 @@ def login():
         # 최근 로그인 시간 업데이트
         user_id = result[0]['id']
         login_time: datetime = datetime.now()
-        login_time_str: str = login_time.strftime("%Y-%m-%d %H:%M:%S").split(".")[0]
+        login_time_str: str = login_time.strftime(
+            "%Y-%m-%d %H:%M:%S").split(".")[0]
 
         query = f"UPDATE Members SET last_acc_date = ? WHERE id = ?;"
         cur.execute(query, (login_time_str, user_id))
@@ -114,7 +115,7 @@ def login():
         return redirect(url_for(endpoint="home"))
 
 
-@app.route("/register", methods = ['GET', 'POST'])
+@app.route("/register", methods=['GET', 'POST'])
 def register():
     context = None
     if request.method == 'GET':
@@ -123,7 +124,7 @@ def register():
         username = request.form['username']
         pw = request.form['pw']
         search_query = {
-            'user':{
+            'user': {
                 'table': 'Members',
                 'attributes': ['username'],
                 'condition': "username == '{}'".format(username)
@@ -132,7 +133,7 @@ def register():
 
         if search_query_execute(cur, search_query)['user'][0] is not None:
             flash("이미 존재하는 username입니다!")
-            return redirect(url_for('register')) 
+            return redirect(url_for('register'))
         else:
             register_query = '''
                             INSERT INTO Members (username, password, admin, reg_date, last_acc_date, is_deleted)
@@ -142,7 +143,6 @@ def register():
             connection.commit()
             flash("회원가입이 완료되었습니다! 다시 로그인해주세요")
             return redirect(url_for('home'))
-
 
 
 @app.route("/leaderboard")
