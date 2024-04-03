@@ -1,9 +1,9 @@
 {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <script>
-      alert("{{ messages[-1] }}")
-    </script>
-  {% endif %}
+{% if messages %}
+<script>
+  alert("{{ messages[-1] }}")
+</script>
+{% endif %}
 {% endwith %}
 
 <!DOCTYPE html>
@@ -44,20 +44,21 @@
   <!-- ---------------------------------------------------------------------------------------- -->
 
   <div class="container">
-    <h2>Today's TIL List</h2>
+    <h2>Latest TIL List</h2>
     <div class="card-container">
-      {% for today_til in data['today_til'] %}
+      {% for latest_til in data['latest_til'][:3] %}
       <div class="til_card">
-        <div class="front" href="background-image: url(post/{{ today_til['id'] }})">
+        <div class="front">
           <!-- 앞면 내용 -->
-          <h3>{{ today_til['title'] }}</h3>
+          <img src="{{ latest_til['thumbnail'] }}" class="thumbnail">
+          <h3>{{ latest_til['title'] }}</h3>
         </div>
         <div class="back">
           <!-- 뒷면 내용 -->
-          <p>{{ today_til['contents'] }}</p>
-          <p>Likes: {{ today_til['like_cnt'] }}</p>
-          <p>Posted by: {{ today_til['user_id'] }} on {{ today_til['reg_date'] }}</p>
-          <br><a href="post/{{ today_til['id'] }}">TIL 보러가기</a>
+          <p>{{ latest_til['contents'] }}</p>
+          <p>Likes: {{ latest_til['like_cnt'] }}</p>
+          <p>Posted by: {{ latest_til['user_id'] }} on {{ latest_til['reg_date'] }}</p>
+          <br><a href="post/{{ latest_til['id'] }}">TIL 보러가기</a>
         </div>
       </div>
       {% endfor %}
@@ -68,8 +69,14 @@
 
   <footer>
     Team CSI
-    <a href="https://github.com/luna-negra/csi_group_project/tree/main" target="_blank">github</a>
-    <a href="https://teamsparta.notion.site/1-CSI-6f9c97ddc53348598f701eb6f7796eb3" target="_blank">notion</a>
+
+    <a href="https://github.com/luna-negra/csi_group_project/tree/main" target="_blank">
+      <img src="{{ url_for('static', filename='image/github-logo.png') }}"> Github
+    </a>
+    <a href="https://teamsparta.notion.site/1-CSI-6f9c97ddc53348598f701eb6f7796eb3" target="_blank"
+      rel="noopener noreferrer">
+      <img src="{{ url_for('static', filename='image/notion-logo.png') }}"> Notion
+    </a>
   </footer>
 
 </body>

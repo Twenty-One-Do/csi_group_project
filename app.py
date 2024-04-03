@@ -27,13 +27,13 @@ def make_session_permanent():
 @app.route("/")
 def home():
     search_queries = {
-        'today_til': {
+        'latest_til': {
             'table': 'Posts',
             'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
-            'condition': 'date(reg_date) = date(CURRENT_DATE)'},
+            'condition': None},
     }
     context = search_query_execute(cur, search_queries)
-
+    context['latest_til'].sort(key=lambda x: x['reg_date'], reverse=True)
     return render_template("main.html", data=context)
 
 
@@ -77,10 +77,24 @@ def post(post_id):
     return render_template("post.html", data=context)
 
 
-@app.route("/write")
+@app.route("/write", methods=['GET', 'POST'])
 def write():
-    context = None
-    return render_template("write.html", data=context)
+    if request.method == "GET":
+        if 'meminfo' in session:
+            return render_template("write.html", data=session['meminfo'])
+        else:
+            flash("로그인 먼저 해주세요!")
+            return redirect(url_for('login'))
+    elif request.method == "POST":
+        title = request.form['title']
+        contents = request.form['content']
+        user_id = session['meminfo']['id']
+        cur.execute("""
+        INSERT INTO Posts (title, contents, user_id)
+        VALUES ('{}', '{}', {})
+        """.format(title, contents, user_id))
+        connection.commit()
+        return redirect(url_for('til_list'))
 
 
 @app.route(rule="/login", methods=["GET", "POST"])
