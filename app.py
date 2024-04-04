@@ -195,16 +195,7 @@ def post(post_id):
             'b_key': 'id',
             'condition': f"a.post_id = {post_id}"},
     }
-    # search_queries = {
-    #     'post': {
-    #         'table': 'Posts',
-    #         'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
-    #         'condition': 'id = {}'.format(post_id)},
-    #     'comments': {
-    #         'table': 'Comments',
-    #         'attributes': ['id', 'user_id', 'contents', 'post_id', 'reg_date'],
-    #         'condition': 'post_id = {}'.format(post_id)},
-    # }
+
     context = search_query_execute_join(cur, search_queries)
     context['session'] = session
     return render_template("post.html", data=context)
