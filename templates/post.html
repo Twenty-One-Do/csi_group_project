@@ -49,7 +49,7 @@
         {{ data['post'][0]['a.contents'] | safe}}
       </div>
       <div class="like-count">
-        <div>
+        <div id="like_cnt">
           좋아요 {{ data['post'][0]['a.like_cnt'] }} 개
         </div>
         <div class="btn-container">
@@ -101,49 +101,47 @@
     const not_like = getComputedStyle(document.documentElement).getPropertyValue('--middle-color').trim();
     const like = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
     const button = document.getElementById('like_btn');
-    
-    async function check_like(post_id) {
-      const response = await fetch('/like_check', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ post_id }),
+    const like_box = document.getElementById('like_cnt');
+
+    async function check_like_btn() {
+      const response = await fetch('/push_like', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({post_id: post_id, only_check: 1})
       });
-
-      if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
-        const result = await response.json();
-        return result.isLiked;
+      if (response.ok) {
+          const result = await response.json();
+          if (result.liked) {
+            button.style.backgroundColor = like;
+          } else {
+            button.style.backgroundColor = not_like;
+          }
       } else {
-        console.error('Non-JSON response received');
-        return false;
+          return 0;
       }
     }
-
-    async function renewal_like_btn_color() {
-      const isLiked = await check_like(post_id);
-      if (isLiked) {
-        button.style.backgroundColor = like;
-      } else {
-        button.style.backgroundColor = not_like;
-      }
-    }
-
-    renewal_like_btn_color();
-
+    check_like_btn()
     async function like_btn_push() {
-      const isLiked = await check_like(post_id);
-      await fetch('/push_like', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ post_id, isLiked }),
+      button.disabled = true;
+      const response = await fetch('/push_like', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({post_id: post_id, only_check: 0})
       });
-
-      await renewal_like_btn_color();
+      if (response.ok) {
+          const result = await response.json();
+          if (result.liked) {
+            button.style.backgroundColor = not_like;
+          } else {
+            button.style.backgroundColor = like;
+          }
+          like_box.innerHTML = "좋아요 "+result.like_cnt+" 개"
+      } else {
+          return 0;
+      }
+      setTimeout(() => {button.disabled = false;}, 500);
     }
-  
+
     function mod_btn_push(){
       var targetUrl = "../mod/"+post_id.toString();
       window.location.href = targetUrl;

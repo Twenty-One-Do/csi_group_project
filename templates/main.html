@@ -60,7 +60,7 @@
             {% else %}
             <img src="../static/image/basic_image.png" class="thumbnail">
             {% endif %}
-            <h3>{{ latest_til['a.title'] }}</h3>
+            <h3>{{ latest_til['a.title'][:10]+'...' if latest_til['a.title']|length > 10 else latest_til['a.title'] }}</h3>
           </div>
           <div class="back">
             <!-- 뒷면 내용 -->
