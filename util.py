@@ -125,3 +125,18 @@ def search_query_execute_join(cur, queries):
         if len(context[k]) == 0:
             context[k].append(None)
     return context
+
+def check_like(cur, post_id, user_id):
+    search_query = {
+        'is_like':{
+            'table': 'Post_Like',
+            'attributes': ['id','post_id','user_id'],
+            'condition': f'post_id = {post_id} AND user_id = {user_id}'
+        }
+    }
+    res = search_query_execute(cur,search_query)['is_like'][0]
+
+    if res is None:
+        return False
+    else:
+        return True

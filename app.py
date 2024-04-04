@@ -1,5 +1,5 @@
 from flask import Flask, flash, render_template, request, session, redirect, url_for, jsonify
-from util import db_initialization, add_sample, search_query_execute, search_query_execute_join
+from util import db_initialization, add_sample, search_query_execute, search_query_execute_join, check_like
 from datetime import datetime, timedelta
 from threading import Thread, Event
 
@@ -450,42 +450,17 @@ def leaderboard():
     }
 
     return render_template("leaderboard.html", data=leaderboard_message, pagination=pagination, session = session)
-
-
-@app.route('/like_check', methods=['POST'])
-def like_check():
-    if 'meminfo' in session:
-        data = request.get_json()
-        user_id = str(session['meminfo']['id'])
-        post_id = data["post_id"]
-
-        search_query = {
-            'likes':{
-                "table": "Post_Like",
-                "attributes": ["id", "user_id", "post_id"],
-                "condition": f"user_id={user_id}"
-            }
-        }
-        user_likes = search_query_execute(cur, search_query)
-        liked = False
-        if user_likes['likes'][0] is not None:
-            for rec in user_likes['likes']:
-                if int(post_id) == rec['post_id']:
-                    liked = True
-                    break
-
-        response = {'isLiked': liked}
-
-        return jsonify(response)
-    else:
-        return None
     
 @app.route('/push_like', methods=['POST'])
 def push_like():
     data = request.get_json()
     user_id = str(session['meminfo']['id'])
-    post_id = data["post_id"]
-    liked = data["isLiked"]
+    post_id, only_check = data["post_id"], data["only_check"]
+    
+    liked = check_like(cur, post_id, user_id)
+    if only_check:
+        return jsonify({'liked': liked})
+
     if liked:
         cur.execute(f"""DELETE FROM Post_Like WHERE user_id = {user_id} AND post_id = {post_id}""")
         cur.execute(f"""UPDATE Posts SET like_cnt= like_cnt-1 WHERE id= {post_id}""")
@@ -494,7 +469,16 @@ def push_like():
         cur.execute(f"""INSERT INTO Post_Like (user_id, post_id) VALUES ({user_id}, {post_id})""")
         cur.execute(f"""UPDATE Posts SET like_cnt= like_cnt+1 WHERE id= {post_id}""")
         connection.commit()
-    return jsonify({'push': True})
+    
+    search_query = {
+        'like_cnt':{
+            'table':'Posts',
+            'attributes':['id', 'like_cnt'],
+            'condition': f'id= {post_id}'
+        }
+    }
+    like_cnt = search_query_execute(cur, search_query)['like_cnt'][0]['like_cnt']
+    return jsonify({'like_cnt':like_cnt, 'liked': liked})
 
 
 # 임현경: consecutive_cnt 일괄 확인 
