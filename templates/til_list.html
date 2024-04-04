@@ -45,10 +45,17 @@
     </div>
   </div>
   <!-- ---------------------------------------------------------------------------------------- -->
-  <div class="search_box">
+  <!-- <div class="search_box">
     <form id="searchForm" action="" method="GET">
       <input type="text" name="condition" id="condition">
       <button type="submit" class="submit_btn" onclick="submitForm()">Search</button>
+    </form>
+  </div> -->
+  <div class="search_box">
+    <form method="GET">
+      <label for="search"></label>
+      <input type="text" name="condition" id="condition" placeholder="유저 이름 입력..." autofocus required />
+      <button type="submit" onclick="submitForm()">검색</button>
     </form>
   </div>
 

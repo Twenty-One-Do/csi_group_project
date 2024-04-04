@@ -3,16 +3,71 @@
 .search_box {
     display: flex;
     justify-content: center;
-    height: 50px;
-    margin: 20px;
-    width: 100%;
+    margin-top: 20px;
 }
 
-.submit_btn {
-    width: 100px;
-    color: var(--accent-color);
-    background-color: var(--middle-color);
-    font-size: 15px;
+form {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 200px;
+    background: lightblue;
+    border-radius: 5px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+input[type="text"] {
+    outline: 0;
+    border: 0 solid black;
+    width: 100%;
+    height: 40px;
+    background: var(--normal-color);
+    font-size: 12px;
+    padding: 0 1.6rem;
+    border-radius: 5px;
+    appearance: none;
+    transition: all 0.3s 0.3s;
+    transition-property: width, border-radius;
+    z-index: 1;
+    position: absolute;
+}
+
+button {
+    position: relative;
+    outline: 0;
+    top: 0;
+    left: 200px;
+    width: 50px;
+    height: 40px;
+    font-weight: bold;
+    font-size: 12px;
+    background: lightblue;
+    border: 0 solid black;
+    border-radius: 0 5px 5px 0;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+input:not(:placeholder-shown) {
+    border-radius: 5px 0 0 5px;
+    width: calc(100% - 50px);
+
+    +button {
+        display: block;
+    }
+}
+
+label {
+    position: absolute;
+    clip: rect(1px, 1px, 1px, 1px);
+    padding: 0;
+    border: 0;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
 }
 
 /* .til_lists {
@@ -42,7 +97,7 @@
     justify-content: center;
 }
 
-.til_card-container{
+.til_card-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-gap: 20px;
@@ -52,7 +107,7 @@
     justify-content: center;
 }
 
-.pagination_container{
+.pagination_container {
     max-width: 2000px;
     border-radius: 10px;
     text-align: center;
@@ -71,29 +126,35 @@
     list-style: none;
     padding: 0;
 }
+
 .pagination li {
     margin: 0 2px;
 }
+
 .pagination li a {
     padding: 5px 10px;
     text-decoration: none;
     color: black;
     border: 1px solid #ddd;
 }
+
 .pagination li.active a,
 .pagination li a:hover {
     background-color: #ddd;
 }
+
 .pagination li.disabled a {
     color: grey;
 }
+
 .pagination li.disabled a:hover {
     background-color: transparent;
 }
 
-.active{
+.active {
     color: var(--normal-color);
 }
-.disabled{
+
+.disabled {
     color: var(--accent-color);
 }
