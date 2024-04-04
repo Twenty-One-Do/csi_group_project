@@ -1,55 +1,127 @@
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<script>
+  alert("{{ messages[-1] }}")
+</script>
+{% endif %}
+{% endwith %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TIL_List</title>
-  <link href="../static/styles.css" rel = "stylesheet" type="text/css" />
+  <link href="../static/styles.css" rel="stylesheet" type="text/css" />
   <link href="../static/til_list.css" rel="stylesheet" type="text/css" />
+  <link href="../static/main.css" rel="stylesheet" type="text/css" />
 </head>
-  <body>
-  
-    <div class="navbar">
-      <div class="left">
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/til_list">TIL</a></li>
-          <li><a href="/leaderboard">Leaderboard</a></li>
-        </ul>
-      </div>
-      <div class="right">
-        <ul>
-          <li><a href="#">My</a>
-            <ul class="dropdown">
-              <li><a href="/my_page">내 정보</a></li>
-              <li><a href="/til_list['user_id']">내 TIL</a></li>
-              <li><a href="/write">글 작성</a></li>
-              <li><a href="/logout">로그아웃</a></li>
-            </ul>
-          </li>
-        </ul>
-      </div>
+
+<body>
+
+  <div class="navbar">
+    <div class="left">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/til_list">TIL</a></li>
+        <li><a href="/leaderboard">Leaderboard</a></li>
+      </ul>
     </div>
-    <!-- ---------------------------------------------------------------------------------------- -->
-    <div class="search_box">
-        <input type="text" >
-        <button type="submit" class="submit_btn">Search</button>
+    <div class="right">
+      <ul>
+        <li><a href="#">My</a>
+          <ul class="dropdown">
+            <li><a href="/my_page">내 정보</a></li>
+            <li><a href="/til_list['user_id']">내 TIL</a></li>
+            <li><a href="/write">글 작성</a></li>
+            {% if 'meminfo' in data['session'] %}
+            <li><a href="/logout">로그아웃</a></li>
+            {% else %}
+            <li><a href="/login">로그인</a></li>
+            {% endif %}
+          </ul>
+        </li>
+      </ul>
     </div>
-    <div class="til_lists">
-      {% for til in data['lists'] %}
-      <div class="til_box">
-        <p>{{ til['thumbnail'] }}</p> 
-        <br><a href="post/{{ til['title'] }}">{{ til['title'] }}</a> 
+  </div>
+  <!-- ---------------------------------------------------------------------------------------- -->
+  <div class="search_box">
+    <form id="searchForm" action="" method="GET">
+      <input type="text" name="condition" id="condition">
+      <button type="submit" class="submit_btn" onclick="submitForm()">Search</button>
+    </form>
+  </div>
+
+  <div class="til_list">
+    <div class="til_card-container">
+      {% for til in data['til_list'] %}
+      <div class="til_card">
+        <div class="front">
+          <!-- 앞면 내용 -->
+          {% if til['thumbnail'] != None %}
+            <img src="{{ til['thumbnail'] }}" class="thumbnail">
+          {% else %}
+            <img src="../static/image/basic_image.png" class="thumbnail">
+          {% endif %}
+          <h3>{{ til['title'] }}</h3>
+        </div>
+        <div class="back">
+          <!-- 뒷면 내용 -->
+          <p>{{ til['contents'] }}</p>
+          <p>Likes: {{ til['like_cnt'] }}</p>
+          <p>Posted by: {{ til['user_id'] }} on {{ til['reg_date'] }}</p>
+          <br><a href="../post/{{ til['id'] }}">TIL 보러가기</a>
+        </div>
       </div>
       {% endfor %}
     </div>
-    
-    <!-- ---------------------------------------------------------------------------------------- -->
-    <footer>
-      Team CSI
-      <a href="https://github.com/luna-negra/csi_group_project/tree/main" target="_blank">github</a>
-      <a href="https://teamsparta.notion.site/1-CSI-6f9c97ddc53348598f701eb6f7796eb3" target="_blank">notion</a>
-    </footer>
-  </body>
+
+    <div class="pagination_container">
+      <ul class="pagination">
+        {% if data['now_page'] != 1 %}
+          <li class="{{ 'disabled' if data['now_page'] == pages else '' }}">
+              <a href="{{ url_for('til_list', page_num=data['now_page']-1) }}">Prev</a>
+          </li>
+        {% endif %}
+
+        {% for i in range(1, data['max_page']+1) %}
+            <li class="{{ 'active' if i == data['now_page'] else '' }}">
+                <a href="{{ url_for('til_list', page_num=i) }}">{{ i }}</a>
+            </li>
+        {% endfor %}
+
+        {% if data['now_page'] != data['max_page'] %}
+          <li class="{{ 'disabled' if data['now_page'] == pages else '' }}">
+              <a href="{{ url_for('til_list', page_num=data['now_page']+1) }}">Next</a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+
+  <!-- ---------------------------------------------------------------------------------------- -->
+
+  <footer>
+    Team CSI
+
+    <a href="https://github.com/luna-negra/csi_group_project/tree/main" target="_blank">
+      <img src="{{ url_for('static', filename='image/github-logo.png') }}"> Github
+    </a>
+    <a href="https://teamsparta.notion.site/1-CSI-6f9c97ddc53348598f701eb6f7796eb3" target="_blank"
+      rel="noopener noreferrer">
+      <img src="{{ url_for('static', filename='image/notion-logo.png') }}"> Notion
+    </a>
+  </footer>
+
+  <script>
+    function submitForm() {
+        var conditionValue = document.getElementById('condition').value;
+        var form = document.getElementById('searchForm');
+
+        form.action = '/til_list/1&'+conditionValue.toString()
+
+    }
+  </script>
+</body>
 
 </html>

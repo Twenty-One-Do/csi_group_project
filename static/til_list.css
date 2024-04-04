@@ -15,16 +15,78 @@
     font-size: 15px;
 }
 
-.til_lists {
-    justify-content: center;
-    width: 200px;
-    height: 250px;
+/* .til_lists {
+    width: 80%;
+    height: 80%;
     border-radius: 10px;
     text-align: center;
-    align-items: center;
-    background-color: var(--normal-color);
+    background-color: var(--middle-color);
     color: var(--accent-color);
     padding: 20px;
     margin: 20px;
+    display: flex;
+    flex-wrap: wrap;
+}  */
 
+.til_list {
+    max-width: 2000px;
+    border-radius: 10px;
+    text-align: center;
+    background-color: var(--middle-color);
+    color: var(--accent-color);
+    padding: 20px;
+    margin: 30px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.til_card-container{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-gap: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.pagination_container{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+}
+.pagination li {
+    margin: 0 2px;
+}
+.pagination li a {
+    padding: 5px 10px;
+    text-decoration: none;
+    color: black;
+    border: 1px solid #ddd;
+}
+.pagination li.active a,
+.pagination li a:hover {
+    background-color: #ddd;
+}
+.pagination li.disabled a {
+    color: grey;
+}
+.pagination li.disabled a:hover {
+    background-color: transparent;
+}
+
+.active{
+    color: var(--normal-color);
+}
+.disabled{
+    color: var(--accent-color);
 }

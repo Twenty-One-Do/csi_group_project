@@ -2,23 +2,25 @@
 
 .form_container{
     margin: 20px;
+    margin-top: 100px;
+    margin-bottom: 100px;
 }
 .title_inp {
-    width: 100%; /* 전체 너비 사용 */
-    padding: 12px 20px; /* 편안한 타이핑 공간 */
-    margin: 8px 0; /* 주변 여백 */
-    display: inline-block; /* 인라인-블록 디스플레이 */
-    border: 1px solid var(--middle-color); /* 세밀한 테두리 */
-    border-radius: 4px; /* 둥근 모서리 */
-    box-sizing: border-box; /* 테두리와 패딩이 너비에 포함되도록 */
-    font-size: 16px; /* 적당한 글자 크기 */
-    background-color: white; /* 배경색 */
-    color: black; /* 글자색 */
+    width: 100%; 
+    padding: 12px 20px; 
+    margin: 8px 0;
+    display: inline-block; 
+    border: 1px solid var(--middle-color); 
+    border-radius: 4px;
+    box-sizing: border-box; 
+    font-size: 16px; 
+    background-color: white; 
+    color: black;
 }
 .title_inp:focus {
-    border-color: var(--accent-color); /* 포커스 시 테두리 색상 변경 */
-    outline: none; /* 기본 아웃라인 제거 */
-    box-shadow: 0 0 8px var(--accent-color); /* 포커스 시 그림자 효과 */
+    border-color: var(--accent-color); 
+    outline: none; 
+    box-shadow: 0 0 8px var(--accent-color);
 }
 
 .btn_container{
@@ -28,57 +30,57 @@
 }
 
 .post_btn {
-    background-color: var(--accent-color); /* 버튼 배경 색 */
-    color: var(--normal-color); /* 버튼 텍스트 색 */
-    padding: 15px 32px; /* 상하좌우 패딩 */
-    text-align: center; /* 텍스트 중앙 정렬 */
-    text-decoration: none; /* 텍스트 밑줄 없애기 */
-    display: inline-block; /* 인라인-블록 요소로 표시 */
-    font-size: 10px; /* 글자 크기 */
-    margin: 4px 2px; /* 마진 */
-    cursor: pointer; /* 마우스 오버 시 커서 모양 변경 */
-    border: none; /* 테두리 없애기 */
-    border-radius: 5px; /* 버튼 모서리 둥글게 */
-    transition: background-color 0.3s, box-shadow 0.3s; /* 색상 및 그림자 전환 효과 */
+    background-color: var(--accent-color); 
+    color: var(--normal-color); 
+    padding: 15px 32px; 
+    text-align: center; 
+    text-decoration: none; 
+    display: inline-block; 
+    font-size: 10px; 
+    margin: 4px 2px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px; 
+    transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .post_btn:hover {
-    background-color: var(--normal-color); /* 마우스 오버 시 배경 색 변경 */
+    background-color: var(--normal-color);
     color: var(--accent-color);
-    box-shadow: 0 4px 8px 0 var(--accent-color); /* 마우스 오버 시 그림자 효과 */
+    box-shadow: 0 4px 8px 0 var(--accent-color);
 }
 
 .post_btn:active {
-    background-color: var(--accent-color); /* 클릭 시 배경 색 */
-    box-shadow: 0 5px var(--accent-color); /* 클릭 시 그림자 약간 내려오게 */
-    transform: translateY(4px); /* 클릭 시 버튼 약간 아래로 이동 */
+    background-color: var(--accent-color);
+    box-shadow: 0 5px var(--accent-color);
+    transform: translateY(4px);
 }
 
 .exit_btn {
-    background-color: var(--accent-color); /* 버튼 배경 색 */
-    color: var(--normal-color); /* 버튼 텍스트 색 */
-    padding: 15px 32px; /* 상하좌우 패딩 */
-    text-align: center; /* 텍스트 중앙 정렬 */
-    text-decoration: none; /* 텍스트 밑줄 없애기 */
-    display: inline-block; /* 인라인-블록 요소로 표시 */
-    font-size: 10px; /* 글자 크기 */
-    margin: 4px 2px; /* 마진 */
-    cursor: pointer; /* 마우스 오버 시 커서 모양 변경 */
-    border: none; /* 테두리 없애기 */
-    border-radius: 5px; /* 버튼 모서리 둥글게 */
-    transition: background-color 0.3s, box-shadow 0.3s; /* 색상 및 그림자 전환 효과 */
+    background-color: var(--accent-color); 
+    color: var(--normal-color); 
+    padding: 15px 32px; 
+    text-align: center; 
+    text-decoration: none; 
+    display: inline-block; 
+    font-size: 10px; 
+    margin: 4px 2px;
+    cursor: pointer; 
+    border: none; 
+    border-radius: 5px; 
+    transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .exit_btn:hover {
-    background-color: var(--normal-color); /* 마우스 오버 시 배경 색 변경 */
+    background-color: var(--normal-color); 
     color: var(--accent-color);
-    box-shadow: 0 4px 8px 0 var(--accent-color); /* 마우스 오버 시 그림자 효과 */
+    box-shadow: 0 4px 8px 0 var(--accent-color);
 }
 
 .exit_btn:active {
-    background-color: var(--accent-color); /* 클릭 시 배경 색 */
-    box-shadow: 0 5px var(--accent-color); /* 클릭 시 그림자 약간 내려오게 */
-    transform: translateY(4px); /* 클릭 시 버튼 약간 아래로 이동 */
+    background-color: var(--accent-color); 
+    box-shadow: 0 5px var(--accent-color);
+    transform: translateY(4px);
 }
 
 /**

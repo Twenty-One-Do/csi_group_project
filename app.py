@@ -1,4 +1,4 @@
-from flask import Flask, flash, render_template, request, session, redirect, url_for
+from flask import Flask, flash, render_template, request, session, redirect, url_for, jsonify
 from util import db_initialization, add_sample, search_query_execute
 from datetime import datetime, timedelta
 import requests
@@ -34,31 +34,134 @@ def home():
             'condition': None},
     }
     context = search_query_execute(cur, search_queries)
-    context['latest_til'].sort(key=lambda x: x['reg_date'], reverse=True)
+    if context['latest_til'][0] is not None:
+        context['latest_til'].sort(key=lambda x: x['reg_date'], reverse=True)
+    context['session'] = session
     return render_template("main.html", data=context)
 
 
-@app.route("/my_page")
+@app.route(rule="/my_page", methods=["GET", "POST"])
 def my_page():
-    context = None
-    return render_template("my_page.html", data=context)
+    # 로그인 세션 미수립 시, 로그인 유도
+    if "meminfo" not in session:
+        return redirect(url_for("login"))
 
+    if request.method == "POST":
+        if request.form.get("memOutPw"):
 
-@app.route("/til_list")
-def til_list():
-    filter_list = {
-        'search': {
-            'table': 'Posts',
-            'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
-            'condition': None},
-        'lists': {
-            'table': 'Posts',
-            'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
-            'condition': None},
+            user_id = session["meminfo"]["id"]
+            pw = request.form.get("memOutPw")
+            select_queries = {
+                "Members":
+                    {
+                        "table": "Members",
+                        "attributes": ["username", "password", "id"],
+                        "condition": f"id='{user_id}' AND password='{pw}'"
+                    }
+            }
+            result = search_query_execute(cur, select_queries)['Members']
+            if result == [None]:
+                flash("계정 정보가 일치하지 않습니다.")
+
+            else:
+                query = f"UPDATE Members SET is_deleted = ? WHERE id = ?;"
+                cur.execute(query, (1, user_id))
+                connection.commit()
+                flash("회원 탈퇴가 완료되었습니다.")
+                session.pop("meminfo")
+                return redirect(url_for("home"))
+
+        else:
+            user_id = session["meminfo"]["id"]
+            pre_pw = request.form.get("prePw")
+            new_pw = request.form.get("newPw")
+            select_queries = {
+                "Members":
+                    {
+                        "table": "Members",
+                        "attributes": ["username", "password", "id"],
+                        "condition": f"id='{user_id}' AND password='{pre_pw}'"
+                    }
+            }
+
+            result = search_query_execute(cur, select_queries)['Members']
+            if result == [None]:
+                flash("계정 정보가 일치하지 않습니다.")
+
+            else:
+                # new_pw UPDATE
+                query = f"UPDATE Members SET password = ? WHERE id = ?;"
+                cur.execute(query, (new_pw, user_id))
+                connection.commit()
+                flash("비밀번호 변경이 완료되었습니다.")
+
+    # END IF
+
+    # 세션 유지 시, 접속 계정 정보 DB 호출
+    select_queries = {
+        "Members":
+            {
+                "table": "Members",
+                "attributes": ["username", "consecutive_cnt", "reg_date", "last_acc_date"],
+                "condition": f"id='{session['meminfo']['id']}'"
+            }
     }
-    context = search_query_execute(cur, filter_list)
 
-    return render_template("til_list.html", data=context)
+    result = search_query_execute(cur, select_queries)["Members"]
+    # 접속 계정 정보 DB 호출 완료
+
+    # HTML 전송 DATA 작성
+    context = {
+        "username": result[0]["username"],
+        "consecutive_cnt": result[0]["consecutive_cnt"],
+        "reg_date": result[0]["reg_date"],
+        "last_acc_date": result[0]["last_acc_date"],
+    }
+    context['session'] = session
+
+    return render_template(template_name_or_list="my_page.html", data=context)
+
+
+@app.route('/til_list', defaults={'page_num': '1'})
+@app.route('/til_list/<page_num>')
+def til_list(page_num):
+    if '&' in page_num:
+        page_num = page_num.split('&')
+        page_num, condition = int(page_num[0]), page_num[1]
+    else:
+        page_num, condition = int(page_num), None
+
+    interval = 10
+    if condition is not None:
+        page_num  = 1
+        interval = 10000
+        til_list = {
+            'til_list': {
+                'table': 'Posts',
+                'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
+                'condition': f'user_id = {condition}'}
+        }
+    else:
+        til_list = {
+            'til_list': {
+                'table': 'Posts',
+                'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
+                'condition': condition}
+        }
+    context = search_query_execute(cur, til_list)
+    if context['til_list'][0] is not None:
+        til_list = sorted(context['til_list'], key=lambda x: x['reg_date'], reverse=True)
+        num_til = len(til_list)
+        start, end = interval*(page_num-1), min(num_til,interval*(page_num))
+        context['til_list'] = til_list[start:end]
+        context['session'] = session
+        context['now_page'] = page_num
+        context['max_page'] = num_til//interval
+        return render_template("til_list.html", data=context)
+    else:
+        flash("해당 유저의 게시글이 없습니다!")
+        return redirect(url_for("til_list"))
+
 
 
 @app.route("/post/<post_id>")
@@ -74,7 +177,7 @@ def post(post_id):
             'condition': 'post_id = {}'.format(post_id)},
     }
     context = search_query_execute(cur, search_queries)
-
+    context['session'] = session
     return render_template("post.html", data=context)
 
 
@@ -95,7 +198,7 @@ def write():
         VALUES ('{}', '{}', {})
         """.format(title, contents, user_id))
         connection.commit()
-        return redirect(url_for('til_list'))
+        return redirect(url_for('home'))
 
 
 @app.route(rule="/login", methods=["GET", "POST"])
@@ -111,11 +214,12 @@ def login():
                 {
                     "table": "Members",
                     "attributes": ["username", "password", "id"],
-                    "condition": f"username='{data.get('username')}' AND password='{data.get('password')}'"
+                    "condition": f"username='{data.get('username')}' AND password='{data.get('password')}' AND is_deleted=0"
                 }
         }
 
         result = search_query_execute(cur, select_queries)['Members']
+
         if result == [None]:
             flash("계정 정보가 일치하지 않습니다.")
             return redirect(url_for('login'))
@@ -138,8 +242,17 @@ def login():
                 "id": user_id,
                 "name": username
             }
-
         return redirect(url_for(endpoint="home"))
+
+
+# 확인 완료 by 임현경
+@app.route(rule="/logout", methods=["GET"])
+def logout():
+    if "meminfo" in session:
+        session.pop("meminfo")
+        return redirect(url_for("home"))
+
+    return redirect(url_for("login"))
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -169,7 +282,7 @@ def register():
             cur.execute(register_query)
             connection.commit()
             flash("회원가입이 완료되었습니다! 다시 로그인해주세요")
-            return redirect(url_for('home'))
+            return redirect(url_for('login'))
 
 
 @app.route("/leaderboard")
@@ -251,6 +364,46 @@ def leaderboard():
     return render_template("leaderboard.html", data=leaderboard_message, pagination=pagination)
 '''
 
+@app.route('/like_check', methods=['POST'])
+def like_check():
+    data = request.get_json()
+    user_id = str(session['meminfo']['id'])
+    post_id = data["post_id"]
+
+    search_query = {
+        'likes':{
+            "table": "Post_Like",
+            "attributes": ["id", "user_id", "post_id"],
+            "condition": f"user_id={user_id}"
+        }
+    }
+    user_likes = search_query_execute(cur, search_query)
+    liked = False
+    if user_likes['likes'][0] is not None:
+        for rec in user_likes['likes']:
+            if int(post_id) == rec['post_id']:
+                liked = True
+                break
+
+    response = {'isLiked': liked}
+
+    return jsonify(response)
+
+@app.route('/push_like', methods=['POST'])
+def push_like():
+    data = request.get_json()
+    user_id = str(session['meminfo']['id'])
+    post_id = data["post_id"]
+    liked = data["isLiked"]
+    if liked:
+        cur.execute(f"""DELETE FROM Post_Like WHERE user_id = {user_id} AND post_id = {post_id}""")
+        cur.execute(f"""UPDATE Posts SET like_cnt= like_cnt-1 WHERE id= {post_id}""")
+        connection.commit()
+    else:
+        cur.execute(f"""INSERT INTO Post_Like (user_id, post_id) VALUES ({user_id}, {post_id})""")
+        cur.execute(f"""UPDATE Posts SET like_cnt= like_cnt+1 WHERE id= {post_id}""")
+        connection.commit()
+    return jsonify({'push':True})
 
 if __name__ == "__main__":
     app.run()

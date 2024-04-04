@@ -1,9 +1,9 @@
 {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <script>
-      alert("{{ messages[-1] }}")
-    </script>
-  {% endif %}
+{% if messages %}
+<script>
+  alert("{{ messages[-1] }}")
+</script>
+{% endif %}
 {% endwith %}
 
 <!DOCTYPE html>
@@ -34,7 +34,7 @@
             <li><a href="/my_page">내 정보</a></li>
             <li><a href="/til_list['user_id']">내 TIL</a></li>
             <li><a href="/write">글 작성</a></li>
-            <li><a href="/logout">로그아웃</a></li>
+            <li><a href="/login">로그인</a></li>
           </ul>
         </li>
       </ul>
@@ -44,11 +44,12 @@
   <!-- ---------------------------------------------------------------------------------------- -->
   <div id=center>
     <div class="intro_title">
-      <span class="introText">TIL 게시판</span></div>
+      <span class="introText">TIL 게시판</span>
+    </div>
     <div class="intro_title"><span class="introText">Sign Up</span></div>
 
     <div class="loginForm">
-      <form action="register" method="POST", class="register_form">
+      <form action="register" method="POST" , class="register_form">
         <div class="loginInput">
           <input type="text" name="username" id="username" class="loginInput" placeholder="username">
         </div>
@@ -71,9 +72,16 @@
 
   <footer>
     Team CSI
-    <a href="https://github.com/luna-negra/csi_group_project/tree/main" target="_blank">github</a>
-    <a href="https://teamsparta.notion.site/1-CSI-6f9c97ddc53348598f701eb6f7796eb3" target="_blank">notion</a>
+
+    <a href="https://github.com/luna-negra/csi_group_project/tree/main" target="_blank">
+      <img src="{{ url_for('static', filename='image/github-logo.png') }}"> Github
+    </a>
+    <a href="https://teamsparta.notion.site/1-CSI-6f9c97ddc53348598f701eb6f7796eb3" target="_blank"
+      rel="noopener noreferrer">
+      <img src="{{ url_for('static', filename='image/notion-logo.png') }}"> Notion
+    </a>
   </footer>
 
 </body>
+
 </html>

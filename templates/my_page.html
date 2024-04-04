@@ -1,6 +1,12 @@
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <script>
+      alert("{{ messages[-1] }}")
+    </script>
+  {% endif %}
+{% endwith %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,9 +14,8 @@
   <link href="../static/styles.css" rel="stylesheet" type="text/css" />
   <link href="../static/my_page.css" rel="stylesheet" type="text/css" />
 </head>
-
 <body>
-
+  <script src="../static/my_page.js"></script>
   <div class="navbar">
     <div class="left">
       <ul>
@@ -26,7 +31,11 @@
             <li><a href="/my_page">내 정보</a></li>
             <li><a href="/til_list['user_id']">내 TIL</a></li>
             <li><a href="/write">글 작성</a></li>
+            {% if 'meminfo' in data['session'] %}
             <li><a href="/logout">로그아웃</a></li>
+            {% else %}
+            <li><a href="/login">로그인</a></li>
+            {% endif %}
           </ul>
         </li>
       </ul>
@@ -34,14 +43,63 @@
   </div>
 
   <!-- ---------------------------------------------------------------------------------------- -->
+<div class="pageBody">
+  <div class="center">
+    <div id="pageTitle">
+      <span class="pageTitle">마이 페이지</span>
+    </div>
+    <hr>
+    <div id="printInfo">
+      <table id="info">
+        <tr>
+          <th class="key"><span class="tableKey">계정 ID</span></th>
+          <td class="value">{{ data.username }}</td>
+        </tr>
+        <tr>
+          <th class="key"><span class="tableKey">가입일</span></th>
+          <td class="value">{{ data.reg_date }}</td>
+        </tr>
+        <tr>
+          <th class="key"><span class="tableKey">연속 작성일</span></th>
+          <td class="value">{{ data.consecutive_cnt }}</td>
+        </tr>
+        <tr>
+          <th class="key"><span class="tableKey">마지막 로그인</span></th>
+          <td class="value">{{ data.last_acc_date }}</td>
+        </tr>
+        <tr>
+          <th class="key"><span class="tableKey">비밀번호</span></th>
+          <td id="changePW" class="value">
+            <button id="pwHtmlChange" class="btnInner"> 비밀번호 변경</button>
+          </td>
+        </tr>
+        <tr>
+          <th class="key"><span class="tableKey">회원 탈퇴</span></th>
+          <td id="memOut" class="value">
+            <button id="memOutHTMLChange" class="btnInner"> 회원 탈퇴</button>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div id="empty">
 
+    </div>
+  </div>
+</div>
   <!-- ---------------------------------------------------------------------------------------- -->
 
   <footer>
     Team CSI
-    <a href="https://github.com/luna-negra/csi_group_project/tree/main" target="_blank">github</a>
-    <a href="https://teamsparta.notion.site/1-CSI-6f9c97ddc53348598f701eb6f7796eb3" target="_blank">notion</a>
+
+    <a href="https://github.com/luna-negra/csi_group_project/tree/main" target="_blank">
+      <img src="{{ url_for('static', filename='image/github-logo.png') }}"> Github
+    </a>
+    <a href="https://teamsparta.notion.site/1-CSI-6f9c97ddc53348598f701eb6f7796eb3" target="_blank"
+      rel="noopener noreferrer">
+      <img src="{{ url_for('static', filename='image/notion-logo.png') }}"> Notion
+    </a>
   </footer>
 
 </body>
+
 </html>
