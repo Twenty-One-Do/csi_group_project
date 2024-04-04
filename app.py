@@ -3,6 +3,8 @@ from util import db_initialization, add_sample, search_query_execute, search_que
 from datetime import datetime, timedelta
 import requests
 import sqlite3
+from math import ceil
+from flask_paginate import Pagination, get_page_parameter
 
 app = Flask(__name__)
 app.secret_key = 'csi_project'
@@ -262,7 +264,7 @@ def mod(post_id):
         
         if result is None:
             flash("권한이 없습니다!")
-            redirect(url_for('home'))
+            return redirect(url_for('home'))
         else:
             mod_content = result['contents']
             return render_template("write.html", data={'mod_content':mod_content})
@@ -278,10 +280,22 @@ def mod(post_id):
 @app.route('/del/<post_id>')
 def del_post(post_id):
     user_id = session['meminfo']['id']
-    cur.execute(f"""DELETE FROM Posts WHERE user_id = {user_id} AND id = {post_id}""")
-    connection.commit()
-    flash("삭제가 완료되었습니다.")
-    return redirect(url_for('home'))
+    search_query = {
+            'mod_post':{
+                'table':'Posts',
+                "attributes": ["id", "user_id", "contents"],
+                "condition": f'id = {post_id} AND user_id = {user_id}'
+            }
+        }
+    result = search_query_execute(cur, search_query)['mod_post'][0]
+    if result is None:
+            flash("권한이 없습니다!")
+            return redirect(url_for('home'))
+    else:
+        cur.execute(f"""DELETE FROM Posts WHERE user_id = {user_id} AND id = {post_id}""")
+        connection.commit()
+        flash("삭제가 완료되었습니다.")
+        return redirect(url_for('home'))
 
 @app.route(rule="/login", methods=["GET", "POST"])
 def login():
@@ -369,25 +383,43 @@ def register():
 
 @app.route("/leaderboard")
 def leaderboard():
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+    per_page = 5
+
+    offset = (page-1) * per_page  # 각 페이지 start점
+
     cur.execute(""" 
-                SELECT DISTINCT Members.username, Posts.consecutive_cnt
+                SELECT DISTINCT Members.username, Members.consecutive_cnt
                 FROM Members
-                INNER JOIN Posts ON Members.id = Posts.user_id
-                ORDER BY Posts.consecutive_cnt DESC
-    """)  # Members에 있는 username을 id라는 공통키 활용 내부 조인, Posts.consecutive_cnt 내림차순 정렬
-    leaderboard_data = cur.fetchall()  # 해당 리스트 반환
+                ORDER BY Members.consecutive_cnt DESC
+                LIMIT ? OFFSET ? 
+    """, (per_page, offset))
+
+    leaderboard_data = cur.fetchall()
     leaderboard_message = []
 
-    rank = 1
+    rank = offset+1
+
     for row in leaderboard_data:
         username = row[0]
         consecutive_cnt = row[1]
 
-        message = f"{rank}등, {username}님 연속 {consecutive_cnt} 출석!"
+        message = f"{rank}등, {username}님 연속 {consecutive_cnt}일 작성!"
         leaderboard_message.append(message)
         rank += 1
 
-    return render_template("leaderboard.html", data=leaderboard_message)
+    cur.execute("SELECT COUNT(*) FROM Members;")
+    total_members_count = cur.fetchone()[0]  # 첫번째행, 첫번째 열 --> 전체 회원수 가져오기
+    total_pages = ceil(total_members_count/per_page)
+
+    pagination = {
+        'page': page,
+        'per_page': per_page,
+        'total': total_members_count,
+        'total_pages': total_pages
+    }
+
+    return render_template("leaderboard.html", data=leaderboard_message, pagination=pagination)
 
 @app.route('/like_check', methods=['POST'])
 def like_check():

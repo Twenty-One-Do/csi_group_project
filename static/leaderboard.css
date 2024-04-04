@@ -3,18 +3,66 @@
     max-width: 1200px;
     margin: 20px auto;
     padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 50px;
 }
 
 .leaderboard {
     background-color: var(--normal-color);
     margin-top: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--normal-color);
     padding: 20px;
     text-align: left;
+    border-radius: 20px;
+    box-sizing: border-box;
 }
 .rank-item {
     margin-bottom: 10px;
     padding: 20px;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid var(--normal-color);
     text-align: left;
+    border-radius: 20px;
+}
+
+.pagination {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    margin-top: 40px; 
+    margin-bottom: 5px;
+}
+
+.pagination li {
+    margin-right: 5px;
+}
+
+.pagination li:not(:last-child) {
+    margin-right: 5px;
+}
+
+.pagination li a, .pagination li span {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 1px solid var(--normal-color);
+    border-radius: 3px;
+    color: #333;
+    text-decoration: none;
+    white-space: nowrap; 
+
+}
+
+.pagination li.active span {
+    background-color: var(--accent-color);
+    color: var(--normal-color);
+    border-color: var(--accent-color);
+}
+
+.pagination li a:hover {
+    background-color: var(--normal-color);
+}
+
+.pagination ul{
+    display: flex;
 }

@@ -83,8 +83,6 @@
     function content_fill() {
       var turndownService = new TurndownService();
       var markdown = turndownService.turndown(mde.value());
-      console.log(mde.value())
-      console.log(markdown)
       mde.value(markdown)
     }
     
