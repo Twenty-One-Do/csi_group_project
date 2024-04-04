@@ -110,13 +110,8 @@ def my_page():
     # 접속 계정 정보 DB 호출 완료
 
     # HTML 전송 DATA 작성
-    context = {
-        "username": result[0]["username"],
-        "consecutive_cnt": result[0]["consecutive_cnt"],
-        "reg_date": result[0]["reg_date"],
-        "last_acc_date": result[0]["last_acc_date"],
-    }
-    context['session'] = session
+    context = {"username": result[0]["username"], "consecutive_cnt": result[0]["consecutive_cnt"],
+               "reg_date": result[0]["reg_date"], "last_acc_date": result[0]["last_acc_date"], 'session': session}
 
     return render_template(template_name_or_list="my_page.html", data=context)
 
@@ -192,13 +187,36 @@ def write():
         title = request.form['title']
         contents = request.form['content']
         user_id = session['meminfo']['id']
+        yesterday_dt_str = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+        today_dt_str = datetime.now().strftime("%Y-%m-%d")
+
+        # 임현경: Post 업데이트 전, user_id의 최근 포스트 작성일 확인 (2024.04.04)
+        select_query = f"SELECT MAX(reg_date) FROM Posts WHERE user_id={user_id}"
+        result = cur.execute(select_query).fetchone()[0]
+        # 임현경 작업 1차 완료 (2024.04.04)
 
         cur.execute("""
         INSERT INTO Posts (title, contents, user_id)
         VALUES ('{}', '{}', {})
         """.format(title, contents, user_id))
         connection.commit()
+
+        # 임현경: Consecutive Cnt Update (2024.04.04)
+        if result is None:
+            result = ""
+
+        if today_dt_str not in result:
+            update_plus_query = f"UPDATE Members SET consecutive_cnt=1 WHERE id={user_id}"
+
+            if yesterday_dt_str in result:
+                update_plus_query = update_plus_query.replace("consecutive_cnt=1", "consecutive_cnt=consecutive_cnt+1")
+
+            cur.execute(update_plus_query)
+            connection.commit()
+        # 임현경 작업 2차 완료 (2024.04.04)
+
         return redirect(url_for('home'))
+
 
 @app.route("/mod/<post_id>", methods=['GET', 'POST'])
 def mod(post_id):
@@ -233,10 +251,30 @@ def mod(post_id):
 @app.route('/del/<post_id>')
 def del_post(post_id):
     user_id = session['meminfo']['id']
+
+    # 임현경: 오늘 날자에 등록한 포스팅 삭제 시에만 연속 작성일에 영향이 가도록 코드 작성
+    today_dt_str = datetime.now().strftime("%Y-%m-%d")
+    post_reg_date_chk_query = f"SELECT reg_date FROM Posts WHERE id={post_id}"
+    post_reg_date = cur.execute(post_reg_date_chk_query).fetchone()[0].split(" ")[0]
+    # 임현경 1차 작업 완료
+
     cur.execute(f"""DELETE FROM Posts WHERE user_id = {user_id} AND id = {post_id}""")
     connection.commit()
+
+    # 오늘 일자 포스팅 삭제에 대해서 consecutive_cnt 업데이트 작업 진행
+    if post_reg_date == today_dt_str:
+        today_duple_post_chk_query = f"SELECT COUNT(*) FROM Posts WHERE user_id={user_id} AND reg_date LIKE '%{today_dt_str}%'"
+        result = cur.execute(today_duple_post_chk_query)
+
+        if result is not None and not result.fetchone()[0]:
+            update_cnt_restore_query = f"UPDATE Members SET consecutive_cnt=consecutive_cnt-1 WHERE id={user_id} AND consecutive_cnt != 0"
+            cur.execute(update_cnt_restore_query)
+            connection.commit()
+    # 임현경 작업 완료
+
     flash("삭제가 완료되었습니다.")
     return redirect(url_for('home'))
+
 
 @app.route(rule="/login", methods=["GET", "POST"])
 def login():
@@ -386,4 +424,4 @@ def push_like():
     return jsonify({'push':True})
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
