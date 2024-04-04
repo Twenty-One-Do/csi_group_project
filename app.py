@@ -218,7 +218,7 @@ def comment_post(post_id):
 def write():
     if request.method == "GET":
         if 'meminfo' in session:
-            return render_template("write.html", data=session['meminfo'])
+            return render_template("write.html", data={'session':session})
         else:
             flash("로그인 먼저 해주세요!")
             return redirect(url_for('login'))
@@ -277,7 +277,7 @@ def mod(post_id):
             return redirect(url_for('home'))
         else:
             mod_content = result['contents']
-            return render_template("write.html", data={'mod_content': mod_content})
+            return render_template("write.html", data={'session':session, 'mod_content': mod_content})
     elif request.method == "POST":
         title = request.form['title']
         moded_content = request.form['content']
@@ -449,7 +449,7 @@ def leaderboard():
         'total_pages': total_pages
     }
 
-    return render_template("leaderboard.html", data=leaderboard_message, pagination=pagination)
+    return render_template("leaderboard.html", data=leaderboard_message, pagination=pagination, session = session)
 
 
 @app.route('/like_check', methods=['POST'])
