@@ -140,3 +140,17 @@ def check_like(cur, post_id, user_id):
         return False
     else:
         return True
+    
+def db_clean(connection, cur):
+    cur.execute(f"UPDATE Posts SET like_cnt=0")
+    cur.execute(f"DROP TABLE Post_Like")
+    connection.commit()
+    cur.execute('''
+    CREATE TABLE IF NOT EXISTS Post_Like (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        post_id INTEGER,
+        FOREIGN KEY(user_id) REFERENCES Members(id),
+        FOREIGN KEY(post_id) REFERENCES Posts(id)
+    )
+    ''')

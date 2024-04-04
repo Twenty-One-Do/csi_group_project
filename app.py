@@ -1,5 +1,5 @@
 from flask import Flask, flash, render_template, request, session, redirect, url_for, jsonify
-from util import db_initialization, add_sample, search_query_execute, search_query_execute_join, check_like
+from util import db_initialization, add_sample, search_query_execute, search_query_execute_join, check_like, db_clean
 from datetime import datetime, timedelta
 from threading import Thread, Event
 
@@ -16,7 +16,7 @@ cur = connection.cursor()
 
 db_initialization(cur)
 # add_sample(connection, cur)  # 실행 후 주석처리
-
+db_clean(connection,cur)
 # Session 관련 변수 지정
 # Test for 15 Seconds
 SESSION_TIMEOUT: int = 30
