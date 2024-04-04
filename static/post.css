@@ -1,5 +1,7 @@
 @import url("color.css");
-
+img{
+    width: 100%;
+}
 .post-container {
     background-color: var(--normal-color);
     width: 100%;
