@@ -43,7 +43,6 @@
     <textarea class="form-control" name="content" id="content" rows="10">{{ data['mod_content'] if 'mod_content' in data else '' }}</textarea>
     <div class="btn_container">
       <button type="submit" class="post_btn">수정</button>
-      <button class="exit_btn">나가기</button>
     </div>
   </form>
   {% else %}
@@ -52,7 +51,6 @@
     <textarea class="form-control" name="content" id="content" rows="10">{{ data['mod_content'] if 'mod_content' in data else '' }}</textarea>
     <div class="btn_container">
       <button type="submit" class="post_btn">TIL 등록</button>
-      <button class="exit_btn">나가기</button>
     </div>
   </form>
   {% endif %}
