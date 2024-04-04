@@ -292,16 +292,6 @@ def leaderboard():
 
     offset = (page-1) * per_page  # 각 페이지 start점
 
-    cur.execute('''
-    INSERT INTO Members (username, password, consecutive_cnt, admin, reg_date, last_acc_date, is_deleted)
-    VALUES
-    ('가나다', 'hashed_password_1', 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-    ('라마바', 'hashed_password_2', 3, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-    ('사아자', 'hashed_password_3', 6, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-    ('차카파', 'hashed_password_4', 4, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-    ('히히', 'hashed_password_5', 1, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0);
-    ''')
-
     cur.execute(""" 
                 SELECT DISTINCT Members.username, Members.consecutive_cnt
                 FROM Members
