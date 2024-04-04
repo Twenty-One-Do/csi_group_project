@@ -1,5 +1,5 @@
 from flask import Flask, flash, render_template, request, session, redirect, url_for, jsonify
-from util import db_initialization, add_sample, search_query_execute
+from util import db_initialization, add_sample, search_query_execute, search_query_execute_join
 from datetime import datetime, timedelta
 import requests
 import sqlite3
@@ -28,13 +28,18 @@ def make_session_permanent():
 def home():
     search_queries = {
         'latest_til': {
-            'table': 'Posts',
-            'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
+            'a_table': 'Posts',
+            'b_table': 'Members',
+            'a_attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
+            'b_attributes': ['id', 'username'],
+            'a_key': 'user_id',
+            'b_key': 'id',
             'condition': None},
     }
-    context = search_query_execute(cur, search_queries)
+    context = search_query_execute_join(cur, search_queries)
+
     if context['latest_til'][0] is not None:
-        context['latest_til'].sort(key=lambda x: x['reg_date'], reverse=True)
+        context['latest_til'].sort(key=lambda x: x['a.reg_date'], reverse=True)
     context['session'] = session
     return render_template("main.html", data=context)
 
@@ -134,22 +139,31 @@ def til_list(page_num):
     if condition is not None:
         page_num  = 1
         interval = 10000
-        til_list = {
-            'til_list': {
-                'table': 'Posts',
-                'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
-                'condition': f'user_id = {condition}'}
+        search_queries = {
+        'til_list': {
+            'a_table': 'Posts',
+            'b_table': 'Members',
+            'a_attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
+            'b_attributes': ['id', 'username'],
+            'a_key': 'user_id',
+            'b_key': 'id',
+            'condition': f"b.username = '{condition}'"},
         }
     else:
-        til_list = {
-            'til_list': {
-                'table': 'Posts',
-                'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
-                'condition': condition}
+        search_queries = {
+        'til_list': {
+            'a_table': 'Posts',
+            'b_table': 'Members',
+            'a_attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
+            'b_attributes': ['id', 'username'],
+            'a_key': 'user_id',
+            'b_key': 'id',
+            'condition': None},
         }
-    context = search_query_execute(cur, til_list)
+
+    context = search_query_execute_join(cur, search_queries)
     if context['til_list'][0] is not None:
-        til_list = sorted(context['til_list'], key=lambda x: x['reg_date'], reverse=True)
+        til_list = sorted(context['til_list'], key=lambda x: x['a.reg_date'], reverse=True)
         num_til = len(til_list)
         start, end = interval*(page_num-1), min(num_til,interval*(page_num))
         context['til_list'] = til_list[start:end]
@@ -167,17 +181,48 @@ def til_list(page_num):
 def post(post_id):
     search_queries = {
         'post': {
-            'table': 'Posts',
-            'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
-            'condition': 'id = {}'.format(post_id)},
+            'a_table': 'Posts',
+            'b_table': 'Members',
+            'a_attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
+            'b_attributes': ['id', 'username'],
+            'a_key': 'user_id',
+            'b_key': 'id',
+            'condition': f"a.id = {post_id}"},
         'comments': {
-            'table': 'Comments',
-            'attributes': ['id', 'user_id', 'contents', 'post_id', 'reg_date'],
-            'condition': 'post_id = {}'.format(post_id)},
+            'a_table': 'Comments',
+            'b_table': 'Members',
+            'a_attributes': ['id', 'user_id', 'contents', 'post_id', 'reg_date'],
+            'b_attributes': ['id', 'username'],
+            'a_key': 'user_id',
+            'b_key': 'id',
+            'condition': f"a.post_id = {post_id}"},
     }
-    context = search_query_execute(cur, search_queries)
+    # search_queries = {
+    #     'post': {
+    #         'table': 'Posts',
+    #         'attributes': ['title', 'thumbnail', 'like_cnt', 'user_id', 'reg_date', 'contents', 'id'],
+    #         'condition': 'id = {}'.format(post_id)},
+    #     'comments': {
+    #         'table': 'Comments',
+    #         'attributes': ['id', 'user_id', 'contents', 'post_id', 'reg_date'],
+    #         'condition': 'post_id = {}'.format(post_id)},
+    # }
+    context = search_query_execute_join(cur, search_queries)
     context['session'] = session
     return render_template("post.html", data=context)
+
+@app.route("/comment_post/<post_id>", methods=['POST'])
+def comment_post(post_id):
+    post_id = post_id
+    user_id = session['meminfo']['id']
+    content = request.form['comment_content']
+
+    cur.execute("""
+    INSERT INTO Comments (post_id, user_id, contents)
+    VALUES ({}, {}, '{}')
+    """.format(post_id, user_id, content))
+    connection.commit()
+    return redirect(url_for("post", post_id=post_id))
 
 
 @app.route("/write", methods=['GET', 'POST'])
@@ -346,29 +391,32 @@ def leaderboard():
 
 @app.route('/like_check', methods=['POST'])
 def like_check():
-    data = request.get_json()
-    user_id = str(session['meminfo']['id'])
-    post_id = data["post_id"]
+    if 'meminfo' in session:
+        data = request.get_json()
+        user_id = str(session['meminfo']['id'])
+        post_id = data["post_id"]
 
-    search_query = {
-        'likes':{
-            "table": "Post_Like",
-            "attributes": ["id", "user_id", "post_id"],
-            "condition": f"user_id={user_id}"
+        search_query = {
+            'likes':{
+                "table": "Post_Like",
+                "attributes": ["id", "user_id", "post_id"],
+                "condition": f"user_id={user_id}"
+            }
         }
-    }
-    user_likes = search_query_execute(cur, search_query)
-    liked = False
-    if user_likes['likes'][0] is not None:
-        for rec in user_likes['likes']:
-            if int(post_id) == rec['post_id']:
-                liked = True
-                break
+        user_likes = search_query_execute(cur, search_query)
+        liked = False
+        if user_likes['likes'][0] is not None:
+            for rec in user_likes['likes']:
+                if int(post_id) == rec['post_id']:
+                    liked = True
+                    break
 
-    response = {'isLiked': liked}
+        response = {'isLiked': liked}
 
-    return jsonify(response)
-
+        return jsonify(response)
+    else:
+        return None
+    
 @app.route('/push_like', methods=['POST'])
 def push_like():
     data = request.get_json()

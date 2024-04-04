@@ -97,3 +97,31 @@ def search_query_execute(cur, queries):
         if len(context[k]) == 0:
             context[k].append(None)
     return context
+
+def search_query_execute_join(cur, queries):
+    context = {key: [] for key in queries.keys()}
+
+    for k in context.keys():
+        a_attributes = ','.join(['a.'+att for att in queries[k]['a_attributes']])
+        b_attributes = ','.join(['b.'+att for att in queries[k]['b_attributes']])
+
+        if queries[k]['condition'] is not None :
+            query = f'''
+                SELECT {a_attributes}, {b_attributes}
+                FROM {queries[k]['a_table']} a INNER JOIN {queries[k]['b_table']} b ON a.{queries[k]['a_key']}=b.{queries[k]['b_key']}
+                WHERE {queries[k]['condition']};
+                '''
+        else :
+            query = f'''
+                SELECT {a_attributes}, {b_attributes}
+                FROM {queries[k]['a_table']} a INNER JOIN {queries[k]['b_table']} b ON a.{queries[k]['a_key']}=b.{queries[k]['b_key']};
+                '''
+
+        result = cur.execute(query)
+        result = result.fetchall()
+        for res in result:
+            context[k].append(
+                {key: val for key, val in zip((a_attributes+','+b_attributes).split(','), res)})
+        if len(context[k]) == 0:
+            context[k].append(None)
+    return context
