@@ -22,11 +22,14 @@
       <ul>
         <li><a href="#">My</a>
           <ul class="dropdown">
+            {% if 'meminfo' in data['session'] %}
             <li><a href="/my_page">내 정보</a></li>
-            <li><a href="/til_list['user_id']">내 TIL</a></li>
+            <li><a href="/til_list/1&{{ data['session']['meminfo']['id'] }}">내 TIL</a></li>
             <li><a href="/write">글 작성</a></li>
             <li><a href="/logout">로그아웃</a></li>
-
+            {% else %}
+            <li><a href="/login">로그인</a></li>
+            {% endif %}
           </ul>
         </li>
       </ul>
@@ -34,18 +37,25 @@
   </div>
 
   <!-- ---------------------------------------------------------------------------------------- -->
+  {% if 'mod_content' in data %}
+  <form action="" method="POST" class="form_container">
+    <input class="title_inp" name="title" id="title" type="text" placeholder="제목을 입력하세요">
+    <textarea class="form-control" name="content" id="content" rows="10">{{ data['mod_content'] if 'mod_content' in data else '' }}</textarea>
+    <div class="btn_container">
+      <button type="submit" class="post_btn">수정</button>
+      <button class="exit_btn">나가기</button>
+    </div>
+  </form>
+  {% else %}
   <form action="write" method="POST" class="form_container">
     <input class="title_inp" name="title" id="title" type="text" placeholder="제목을 입력하세요">
     <textarea class="form-control" name="content" id="content" rows="10">{{ data['mod_content'] if 'mod_content' in data else '' }}</textarea>
     <div class="btn_container">
-      {% if 'mod_content' in data %}
-      <button type="submit" class="post_btn">수정</button>
-      {% else %}
       <button type="submit" class="post_btn">TIL 등록</button>
-      {% endif %}
       <button class="exit_btn">나가기</button>
     </div>
   </form>
+  {% endif %}
   <!-- ---------------------------------------------------------------------------------------- -->
 
   <footer>

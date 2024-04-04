@@ -155,7 +155,7 @@ def til_list(page_num):
         context['til_list'] = til_list[start:end]
         context['session'] = session
         context['now_page'] = page_num
-        context['max_page'] = num_til//interval
+        context['max_page'] = num_til//interval + 1
         return render_template("til_list.html", data=context)
     else:
         flash("해당 유저의 게시글이 없습니다!")
@@ -193,15 +193,6 @@ def write():
         contents = request.form['content']
         user_id = session['meminfo']['id']
 
-        search_query = { # 수정일 때 post 아이디가 필요함
-            'post':{
-                'table':'Posts',
-                "attributes": ["id", "user_id", "contents"],
-                "condition": f'id = {post_id} AND user_id = {user_id}'
-            }
-        }
-        search_query_execute
-
         cur.execute("""
         INSERT INTO Posts (title, contents, user_id)
         VALUES ('{}', '{}', {})
@@ -209,25 +200,43 @@ def write():
         connection.commit()
         return redirect(url_for('home'))
 
-@app.route("/mod/<post_id>")
+@app.route("/mod/<post_id>", methods=['GET', 'POST'])
 def mod(post_id):
     post_id = int(post_id)
     user_id = session['meminfo']['id']
-    search_query = {
-        'mod_post':{
-            'table':'Posts',
-            "attributes": ["id", "user_id", "contents"],
-            "condition": f'id = {post_id} AND user_id = {user_id}'
-        }
-    }
-    result = search_query_execute(cur, search_query)['mod_post'][0]
 
-    if result is None:
-        flash("권한이 없습니다!")
-        redirect(url_for('home'))
-    else:
-        mod_content = result['contents']
-        return render_template("write.html", data={'mod_content':mod_content})
+    if request.method == "GET":
+        search_query = {
+            'mod_post':{
+                'table':'Posts',
+                "attributes": ["id", "user_id", "contents"],
+                "condition": f'id = {post_id} AND user_id = {user_id}'
+            }
+        }
+        result = search_query_execute(cur, search_query)['mod_post'][0]
+        
+        if result is None:
+            flash("권한이 없습니다!")
+            redirect(url_for('home'))
+        else:
+            mod_content = result['contents']
+            return render_template("write.html", data={'mod_content':mod_content})
+    elif request.method == "POST":
+        title = request.form['title']
+        moded_content = request.form['content']
+        
+        cur.execute(f"""UPDATE Posts SET title="{title}" WHERE id= {post_id} AND user_id={user_id}""")
+        cur.execute(f"""UPDATE Posts SET contents= "{moded_content}" WHERE id= {post_id} AND user_id={user_id}""")
+        connection.commit()
+    return redirect(url_for('post',post_id=post_id))
+
+@app.route('/del/<post_id>')
+def del_post(post_id):
+    user_id = session['meminfo']['id']
+    cur.execute(f"""DELETE FROM Posts WHERE user_id = {user_id} AND id = {post_id}""")
+    connection.commit()
+    flash("삭제가 완료되었습니다.")
+    return redirect(url_for('home'))
 
 @app.route(rule="/login", methods=["GET", "POST"])
 def login():

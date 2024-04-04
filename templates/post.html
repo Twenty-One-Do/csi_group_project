@@ -23,10 +23,10 @@
       <ul>
         <li><a href="#">My</a>
           <ul class="dropdown">
-            <li><a href="/my_page">내 정보</a></li>
-            <li><a href="/til_list['user_id']">내 TIL</a></li>
-            <li><a href="/write">글 작성</a></li>
             {% if 'meminfo' in data['session'] %}
+            <li><a href="/my_page">내 정보</a></li>
+            <li><a href="/til_list/1&{{ data['session']['meminfo']['id'] }}">내 TIL</a></li>
+            <li><a href="/write">글 작성</a></li>
             <li><a href="/logout">로그아웃</a></li>
             {% else %}
             <li><a href="/login">로그인</a></li>
@@ -139,7 +139,8 @@
     }
 
     function del_btn_push(){
-      
+      var targetUrl = "../del/"+post_id.toString();
+      window.location.href = targetUrl;
     }
   </script>
 </body>

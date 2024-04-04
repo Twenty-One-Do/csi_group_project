@@ -53,6 +53,13 @@
 }
 
 .pagination_container{
+    max-width: 2000px;
+    border-radius: 10px;
+    text-align: center;
+    background-color: var(--middle-color);
+    color: var(--accent-color);
+    padding: 20px;
+    margin: 30px;
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
