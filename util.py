@@ -50,27 +50,6 @@ def db_initialization(cur):
     )
     ''')
 
-
-def add_sample(connection, cur):
-    cur.execute('''
-    INSERT INTO Members (username, password, consecutive_cnt, admin, reg_date, last_acc_date, is_deleted)
-    VALUES
-    ('이혜민', 'hashed_password_1', 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-    ('양승조', 'hashed_password_2', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-    ('이원도', 'hashed_password_3', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-    ('임현경', 'hashed_password_4', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-    ('현유경', 'hashed_password_5', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0);
-    ''')
-    cur.execute('''
-    INSERT INTO Posts (title, thumbnail, like_cnt, user_id, reg_date, contents)
-    VALUES
-    ('안녕하세요!', 'https://velog.velcdn.com/images/dnjseh8962/post/f6c4feb7-eb76-4213-882e-aa80643d4f00/image.png', 5, 1, CURRENT_TIMESTAMP, '모두 반가워요 다들 힘내요!'),
-    ('반가워요!', 'https://velog.velcdn.com/images/dnjseh8962/post/cf03a58f-6c61-4277-b694-b81001b8e9c8/image.png', 3, 2, CURRENT_TIMESTAMP, '프로젝트 힘내봅시다!'),
-    ('오늘의 공부', 'https://velog.velcdn.com/images/dnjseh8962/post/c87af4b8-e454-4918-bd59-84a68a3ee1f2/image.png', 3, 2, CURRENT_TIMESTAMP, '안함');
-    ''')
-    connection.commit()
-
-
 def search_query_execute(cur, queries):
     context = {key: [] for key in queries.keys()}
 
@@ -140,17 +119,3 @@ def check_like(cur, post_id, user_id):
         return False
     else:
         return True
-    
-def db_clean(connection, cur):
-    cur.execute(f"UPDATE Posts SET like_cnt=0")
-    cur.execute(f"DROP TABLE Post_Like")
-    connection.commit()
-    cur.execute('''
-    CREATE TABLE IF NOT EXISTS Post_Like (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER,
-        post_id INTEGER,
-        FOREIGN KEY(user_id) REFERENCES Members(id),
-        FOREIGN KEY(post_id) REFERENCES Posts(id)
-    )
-    ''')

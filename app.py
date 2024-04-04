@@ -1,9 +1,7 @@
 from flask import Flask, flash, render_template, request, session, redirect, url_for, jsonify
-from util import db_initialization, add_sample, search_query_execute, search_query_execute_join, check_like, db_clean
+from util import db_initialization, search_query_execute, search_query_execute_join, check_like
 from datetime import datetime, timedelta
 from threading import Thread, Event
-
-import requests
 import sqlite3
 from math import ceil
 from flask_paginate import Pagination, get_page_parameter
@@ -15,10 +13,7 @@ connection = sqlite3.connect('database.db', check_same_thread=False)
 cur = connection.cursor()
 
 db_initialization(cur)
-# add_sample(connection, cur)  # 실행 후 주석처리
-db_clean(connection,cur)
-# Session 관련 변수 지정
-# Test for 15 Seconds
+
 SESSION_TIMEOUT: int = 30
 
 
