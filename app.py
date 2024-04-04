@@ -297,7 +297,8 @@ def leaderboard():
                 FROM Members
                 ORDER BY Members.consecutive_cnt DESC
                 LIMIT ? OFFSET ? 
-    """, (per_page, offset))  # limit 개수 제한, offset: 시작위치 설정
+    """, (per_page, offset))
+
     leaderboard_data = cur.fetchall()
     leaderboard_message = []
 
