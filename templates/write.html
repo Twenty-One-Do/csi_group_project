@@ -36,9 +36,13 @@
   <!-- ---------------------------------------------------------------------------------------- -->
   <form action="write" method="POST" class="form_container">
     <input class="title_inp" name="title" id="title" type="text" placeholder="제목을 입력하세요">
-    <textarea class="form-control" name="content" id="content" rows="10">{{ '' }}</textarea>
+    <textarea class="form-control" name="content" id="content" rows="10">{{ data['mod_content'] if 'mod_content' in data else '' }}</textarea>
     <div class="btn_container">
+      {% if 'mod_content' in data %}
+      <button type="submit" class="post_btn">수정</button>
+      {% else %}
       <button type="submit" class="post_btn">TIL 등록</button>
+      {% endif %}
       <button class="exit_btn">나가기</button>
     </div>
   </form>
@@ -57,75 +61,23 @@
   </footer>
   <script src="{{ url_for('static', filename='simplemde.min.js') }}"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/turndown@7.1.1/dist/turndown.js"></script>
   <script>
-    
-    var mde = new SimpleMDE({
-      autofocus: true,
-      autosave: {
-        enabled: true,
-        uniqueId: "MyUniqueID",
-        delay: 1000,
-      },
-      blockStyles: {
-        bold: "__",
-        italic: "_"
-      },
-      element: document.getElementById("content"),
-      forceSync: true,
-      hideIcons: ["guide", "heading"],
-      indentWithTabs: false,
-      initialValue: "",
-      insertTexts: {
-        horizontalRule: ["", "\n\n-----\n\n"],
-        image: ["![](http://", ")"],
-        link: ["[", "](http://)"],
-        table: ["", "\n\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| Text     | Text      | Text     |\n\n"],
-      },
-      lineWrapping: false,
-      parsingConfig: {
-        allowAtxHeaderWithoutSpace: true,
-        strikethrough: false,
-        underscoresBreakWords: true,
-      },
-      placeholder: "내용을 입력하세요",
-      previewRender: function(plainText) {
-        return customMarkdownParser(plainText); // Returns HTML from a custom parser
-      },
-      previewRender: function(plainText, preview) { // Async method
-        setTimeout(function(){
-          preview.innerHTML = customMarkdownParser(plainText);
-        }, 250);
+    var mde = new SimpleMDE({ element: document.getElementById("content"), 
+                            placeholder: "내용을 입력하세요"})
 
-        return "Loading...";
-      },
-      promptURLs: true,
-      renderingConfig: {
-        singleLineBreaks: false,
-        codeSyntaxHighlighting: true,
-      },
-      shortcuts: {
-        drawTable: "Cmd-Alt-T"
-      },
-      showIcons: ["code", "table"],
-      spellChecker: false,
-      status: false,
-      status: ["autosave", "lines", "words", "cursor"], // Optional usage
-      status: ["autosave", "lines", "words", "cursor", {
-        className: "keystrokes",
-        defaultValue: function(el) {
-          this.keystrokes = 0;
-          el.innerHTML = "0 Keystrokes";
-        },
-        onUpdate: function(el) {
-          el.innerHTML = ++this.keystrokes + " Keystrokes";
-        }
-      }], // Another optional usage, with a custom status bar item that counts keystrokes
-      styleSelectedText: false,
-      tabSize: 4,
-      toolbar: false,
-      toolbarTips: false,
+    document.addEventListener('DOMContentLoaded', function() {
+        content_fill();
     });
 
+    function content_fill() {
+      var turndownService = new TurndownService();
+      var markdown = turndownService.turndown(mde.value());
+      console.log(mde.value())
+      console.log(markdown)
+      mde.value(markdown)
+    }
+    
     document.addEventListener('DOMContentLoaded', function() {
       var writeForm = document.querySelector('.form_container');
       writeForm.addEventListener('submit', function(event) {

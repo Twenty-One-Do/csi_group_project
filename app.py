@@ -192,6 +192,16 @@ def write():
         title = request.form['title']
         contents = request.form['content']
         user_id = session['meminfo']['id']
+
+        search_query = { # 수정일 때 post 아이디가 필요함
+            'post':{
+                'table':'Posts',
+                "attributes": ["id", "user_id", "contents"],
+                "condition": f'id = {post_id} AND user_id = {user_id}'
+            }
+        }
+        search_query_execute
+
         cur.execute("""
         INSERT INTO Posts (title, contents, user_id)
         VALUES ('{}', '{}', {})
@@ -199,6 +209,25 @@ def write():
         connection.commit()
         return redirect(url_for('home'))
 
+@app.route("/mod/<post_id>")
+def mod(post_id):
+    post_id = int(post_id)
+    user_id = session['meminfo']['id']
+    search_query = {
+        'mod_post':{
+            'table':'Posts',
+            "attributes": ["id", "user_id", "contents"],
+            "condition": f'id = {post_id} AND user_id = {user_id}'
+        }
+    }
+    result = search_query_execute(cur, search_query)['mod_post'][0]
+
+    if result is None:
+        flash("권한이 없습니다!")
+        redirect(url_for('home'))
+    else:
+        mod_content = result['contents']
+        return render_template("write.html", data={'mod_content':mod_content})
 
 @app.route(rule="/login", methods=["GET", "POST"])
 def login():
