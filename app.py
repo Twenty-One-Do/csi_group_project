@@ -1,6 +1,8 @@
 from flask import Flask, flash, render_template, request, session, redirect, url_for, jsonify
 from util import db_initialization, add_sample, search_query_execute
 from datetime import datetime, timedelta
+from threading import Thread, Event
+
 import requests
 import sqlite3
 
@@ -127,7 +129,7 @@ def til_list(page_num):
 
     interval = 10
     if condition is not None:
-        page_num  = 1
+        page_num = 1
         interval = 10000
         til_list = {
             'til_list': {
@@ -146,16 +148,15 @@ def til_list(page_num):
     if context['til_list'][0] is not None:
         til_list = sorted(context['til_list'], key=lambda x: x['reg_date'], reverse=True)
         num_til = len(til_list)
-        start, end = interval*(page_num-1), min(num_til,interval*(page_num))
+        start, end = interval * (page_num - 1), min(num_til, interval * (page_num))
         context['til_list'] = til_list[start:end]
         context['session'] = session
         context['now_page'] = page_num
-        context['max_page'] = num_til//interval + 1
+        context['max_page'] = num_til // interval + 1
         return render_template("til_list.html", data=context)
     else:
         flash("해당 유저의 게시글이 없습니다!")
         return redirect(url_for("til_list"))
-
 
 
 @app.route("/post/<post_id>")
@@ -225,28 +226,29 @@ def mod(post_id):
 
     if request.method == "GET":
         search_query = {
-            'mod_post':{
-                'table':'Posts',
+            'mod_post': {
+                'table': 'Posts',
                 "attributes": ["id", "user_id", "contents"],
                 "condition": f'id = {post_id} AND user_id = {user_id}'
             }
         }
         result = search_query_execute(cur, search_query)['mod_post'][0]
-        
+
         if result is None:
             flash("권한이 없습니다!")
             redirect(url_for('home'))
         else:
             mod_content = result['contents']
-            return render_template("write.html", data={'mod_content':mod_content})
+            return render_template("write.html", data={'mod_content': mod_content})
     elif request.method == "POST":
         title = request.form['title']
         moded_content = request.form['content']
-        
+
         cur.execute(f"""UPDATE Posts SET title="{title}" WHERE id= {post_id} AND user_id={user_id}""")
         cur.execute(f"""UPDATE Posts SET contents= "{moded_content}" WHERE id= {post_id} AND user_id={user_id}""")
         connection.commit()
-    return redirect(url_for('post',post_id=post_id))
+    return redirect(url_for('post', post_id=post_id))
+
 
 @app.route('/del/<post_id>')
 def del_post(post_id):
@@ -278,7 +280,6 @@ def del_post(post_id):
 
 @app.route(rule="/login", methods=["GET", "POST"])
 def login():
-
     if request.method == "GET":
         return render_template(template_name_or_list="login.html")
 
@@ -382,6 +383,7 @@ def leaderboard():
 
     return render_template("leaderboard.html", data=leaderboard_message)
 
+
 @app.route('/like_check', methods=['POST'])
 def like_check():
     data = request.get_json()
@@ -389,7 +391,7 @@ def like_check():
     post_id = data["post_id"]
 
     search_query = {
-        'likes':{
+        'likes': {
             "table": "Post_Like",
             "attributes": ["id", "user_id", "post_id"],
             "condition": f"user_id={user_id}"
@@ -407,6 +409,7 @@ def like_check():
 
     return jsonify(response)
 
+
 @app.route('/push_like', methods=['POST'])
 def push_like():
     data = request.get_json()
@@ -421,7 +424,46 @@ def push_like():
         cur.execute(f"""INSERT INTO Post_Like (user_id, post_id) VALUES ({user_id}, {post_id})""")
         cur.execute(f"""UPDATE Posts SET like_cnt= like_cnt+1 WHERE id= {post_id}""")
         connection.commit()
-    return jsonify({'push':True})
+    return jsonify({'push': True})
+
+
+# 임현경: consecutive_cnt 일괄 확인 
+def scheduler(event_o: Event, schedule_time="00:00"):
+    update_query = "UPDATE Members SET consecutive_cnt=0 WHERE id={}"
+    select_query = \
+        """SELECT Members.id, 
+MAX(Posts.reg_date) 
+FROM Members 
+JOIN Posts 
+ON Members.id=Posts.user_id 
+WHERE Members.is_deleted=0
+GROUP BY Members.id"""
+
+    while True:
+        now = datetime.now().strftime("%H:%M")
+        yesterday_dt_str = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+
+        if now == schedule_time:
+            # 사용자 ID 및 ID에 따른 최근 Post 작성 일자 조회.
+            all_fetch = cur.execute(select_query).fetchall()
+
+            # 추출 정보를 토대로 연속 작성일 업데이트 작업 진행
+            for info in all_fetch:
+                user_id = info[0]
+                latest_reg_dt = info[1]
+
+                if yesterday_dt_str not in latest_reg_dt:
+                    cur.execute(update_query.format(user_id))
+                    connection.commit()
+        
+        # Thread Wait by Event Object
+        event_o.wait(60)
+# 임현경 작업 완료
+
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    event = Event()
+    t_sch = Thread(target=scheduler, args=(event,), name="t_sch", daemon=True)
+    t_sch.start()
+    app.run()
+    event.set()
