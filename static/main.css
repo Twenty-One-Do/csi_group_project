@@ -4,8 +4,6 @@
     perspective: 1000px;
     width: 300px;
     height: 350px;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
-    transition: box-shadow 1s ease;
 }
 
 .til_card>.front,
@@ -27,6 +25,7 @@
 
 .til_card>.front {
     background: var(--normal-color);
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
 }
 
 .thumbnail {
