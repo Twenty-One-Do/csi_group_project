@@ -8,12 +8,13 @@ document.addEventListener('DOMContentLoaded', function() {
 function signup_qualification(event) {
   var inp_username = document.getElementById("username").value;
   var inp_password = document.getElementById("password").value;
-  var regex = /^[0-9a-zA-Z!@#$%^&]+$/;
-  var un_qualification = check_Qualification(inp_username, 5, 15, regex);
-  var pw_qualification = check_Qualification(inp_password, 5, 15, regex);
+  var username_regex = /^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|0-9a-zA-Z!@#$%^&]+$/;
+  var password_regex = /^[0-9a-zA-Z!@#$%^&]+$/;
+  var un_qualification = check_Qualification(inp_username, 3, 15, username_regex);
+  var pw_qualification = check_Qualification(inp_password, 5, 15, password_regex);
 
   if (!un_qualification || !pw_qualification) {
-    if (!un_qualification) { alert("입력하신 username이 유효하지 않습니다.\n5~15 길이의 영문, 숫자, 특수문자(!@#$%^&)의 조합으로 작성해주세요"); }
+    if (!un_qualification) { alert("입력하신 username이 유효하지 않습니다.\n3~15 길이의 한글, 영문, 숫자, 특수문자(!@#$%^&)의 조합으로 작성해주세요"); }
     if (!pw_qualification) { alert("입력하신 password가 유효하지 않습니다.\n5~15 길이의 영문, 숫자, 특수문자(!@#$%^&)의 조합으로 작성해주세요"); }
     event.preventDefault();
   } else {

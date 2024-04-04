@@ -172,8 +172,8 @@ def til_list(page_num):
         context['max_page'] = num_til//interval + 1
         return render_template("til_list.html", data=context)
     else:
-        flash("해당 유저의 게시글이 없습니다!")
-        return redirect(url_for("til_list"))
+        flash("게시글이 없습니다!")
+        return redirect(url_for("home"))
 
 
 
