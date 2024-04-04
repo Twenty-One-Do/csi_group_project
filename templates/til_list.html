@@ -58,19 +58,19 @@
       <div class="til_card">
         <div class="front">
           <!-- 앞면 내용 -->
-          {% if til['thumbnail'] != None %}
-            <img src="{{ til['thumbnail'] }}" class="thumbnail">
+          {% if til['a.thumbnail'] != None %}
+            <img src="{{ til['a.thumbnail'] }}" class="thumbnail">
           {% else %}
             <img src="../static/image/basic_image.png" class="thumbnail">
           {% endif %}
-          <h3>{{ til['title'] }}</h3>
+          <h3>{{ til['a.title'] }}</h3>
         </div>
         <div class="back">
           <!-- 뒷면 내용 -->
-          <p>{{ til['contents'] }}</p>
-          <p>Likes: {{ til['like_cnt'] }}</p>
-          <p>Posted by: {{ til['user_id'] }} on {{ til['reg_date'] }}</p>
-          <br><a href="../post/{{ til['id'] }}">TIL 보러가기</a>
+          <p>{{ til['a.contents'] }}</p>
+          <p>Likes: {{ til['a.like_cnt'] }}</p>
+          <p>Posted by: {{ til['a.user_id'] }} on {{ til['a.reg_date'] }}</p>
+          <br><a href="../post/{{ til['a.id'] }}">TIL 보러가기</a>
         </div>
       </div>
       {% endfor %}

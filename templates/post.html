@@ -41,32 +41,43 @@
 
   <div class="container">
     <div class="post-container">
-      <div class="post-title">{{ data['post'][0]['title'] }}</div>
+      <div class="post-title">{{ data['post'][0]['a.title'] }}</div>
       <div class="post-meta">
-        Posted by {{ data['post'][0]['user_id'] }} on {{ data['post'][0]['reg_date'] }}
+        Posted by {{ data['post'][0]['b.username'] }} on {{ data['post'][0]['a.reg_date'] }}
       </div>
       <div class="post-contents", id="post_contents">
-        {{ data['post'][0]['contents'] | safe}}
+        {{ data['post'][0]['a.contents'] | safe}}
       </div>
       <div class="like-count">
         <div>
-          좋아요 {{ data['post'][0]['like_cnt'] }} 개
+          좋아요 {{ data['post'][0]['a.like_cnt'] }} 개
         </div>
         <div class="btn-container">
           {% if 'meminfo' in data['session'] %}
             <button onclick="like_btn_push()" type="submit" class="btn" id="like_btn">좋아요</button>
-            {% if data['session']['meminfo']['id'] == data['post'][0]['user_id'] %}
+            {% if data['session']['meminfo']['id'] == data['post'][0]['a.user_id'] %}
               <button onclick="mod_btn_push()" type="submit" class="btn" id="mod_btn">수정</button>
               <button onclick="del_btn_push()" type="submit" class="btn" id="del_btn">삭제</button>
             {% endif %}
           {% endif %}
         </div>
       </div>
-      <div class="comments">
+
+      {% if 'meminfo' in data['session'] %}
+      <form action="../comment_post/{{ data['post'][0]['a.id'] }}" method="POST" class="comment-box">
+        <textarea class="comment-input" placeholder="댓글을 입력하세요." name="comment_content"></textarea>
+        <button class="comment-submit">댓글 달기</button>
+      </form>
+      {% endif %}
+
+
+      <div class="comments_box">
         {% if data['comments'][0] == None %}
-        댓글이 없습니다.
+        <div class="comments">댓글이 없습니다.</div>
         {% else %}
-        {{ data['comments'][0]['user_id'] }} - {{ data['comments'][0]['contents'] }}
+        {% for comment in data['comments'] %}
+        <div class="comments">{{ comment['b.username'] }} - {{ comment['a.contents'] }}</div>
+        {% endfor %}
         {% endif %}
       </div>
     </div>
