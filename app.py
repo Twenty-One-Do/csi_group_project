@@ -133,7 +133,7 @@ def til_list(page_num):
 
     interval = 10
     if condition is not None:
-        page_num  = 1
+        page_num = 1
         interval = 10000
         til_list = {
             'til_list': {
@@ -150,9 +150,10 @@ def til_list(page_num):
         }
     context = search_query_execute(cur, til_list)
     if context['til_list'][0] is not None:
-        til_list = sorted(context['til_list'], key=lambda x: x['reg_date'], reverse=True)
+        til_list = sorted(context['til_list'],
+                          key=lambda x: x['reg_date'], reverse=True)
         num_til = len(til_list)
-        start, end = interval*(page_num-1), min(num_til,interval*(page_num))
+        start, end = interval*(page_num-1), min(num_til, interval*(page_num))
         context['til_list'] = til_list[start:end]
         context['session'] = session
         context['now_page'] = page_num
@@ -161,7 +162,6 @@ def til_list(page_num):
     else:
         flash("해당 유저의 게시글이 없습니다!")
         return redirect(url_for("til_list"))
-
 
 
 @app.route("/post/<post_id>")
@@ -292,44 +292,15 @@ def leaderboard():
 
     offset = (page-1) * per_page  # 각 페이지 start점
 
-    cur.execute(""" 
-                SELECT DISTINCT Members.username, Members.consecutive_cnt
-                FROM Members
-                ORDER BY Members.consecutive_cnt DESC
-                LIMIT ? OFFSET ? 
-    """, (per_page, offset))  # limit 개수 제한, offset: 시작위치 설정
-    leaderboard_data = cur.fetchall()
-    leaderboard_message = []
-
-    rank = offset+1
-
-    for row in leaderboard_data:
-        username = row[0]
-        consecutive_cnt = row[1]
-
-        message = f"{rank}등, {username}님 연속 {consecutive_cnt} 출석!"
-        leaderboard_message.append(message)
-        rank += 1
-
-    cur.execute("SELECT COUNT(*) FROM Members;")
-    total_members_count = cur.fetchone()[0]  # 첫번째행, 첫번째 열 --> 전체 회원수 가져오기
-    total_pages = ceil(total_members_count/per_page)
-
-    pagination = {
-        'page': page,
-        'per_page': per_page,
-        'total': total_members_count,
-        'total_pages': total_pages
-    }
-
-    return render_template("leaderboard.html", data=leaderboard_message, pagination=pagination)
-
-
-'''def leaderboard():
-    page = request.args.get(get_page_parameter(), type=int, default=1)
-    per_page = 1
-
-    offset = (page-1) * per_page
+    cur.execute('''
+    INSERT INTO Members (username, password, consecutive_cnt, admin, reg_date, last_acc_date, is_deleted)
+    VALUES
+    ('가나다', 'hashed_password_1', 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+    ('라마바', 'hashed_password_2', 3, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+    ('사아자', 'hashed_password_3', 6, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+    ('차카파', 'hashed_password_4', 4, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+    ('히히', 'hashed_password_5', 1, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0);
+    ''')
 
     cur.execute(""" 
                 SELECT DISTINCT Members.username, Members.consecutive_cnt
@@ -346,7 +317,7 @@ def leaderboard():
         username = row[0]
         consecutive_cnt = row[1]
 
-        message = f"{rank}, 연속 {consecutive_cnt} 출석!"
+        message = f"{rank}등, {username}님 연속 {consecutive_cnt}일 출석!"
         leaderboard_message.append(message)
         rank += 1
 
@@ -362,7 +333,7 @@ def leaderboard():
     }
 
     return render_template("leaderboard.html", data=leaderboard_message, pagination=pagination)
-'''
+
 
 @app.route('/like_check', methods=['POST'])
 def like_check():
@@ -371,7 +342,7 @@ def like_check():
     post_id = data["post_id"]
 
     search_query = {
-        'likes':{
+        'likes': {
             "table": "Post_Like",
             "attributes": ["id", "user_id", "post_id"],
             "condition": f"user_id={user_id}"
@@ -389,6 +360,7 @@ def like_check():
 
     return jsonify(response)
 
+
 @app.route('/push_like', methods=['POST'])
 def push_like():
     data = request.get_json()
@@ -396,14 +368,19 @@ def push_like():
     post_id = data["post_id"]
     liked = data["isLiked"]
     if liked:
-        cur.execute(f"""DELETE FROM Post_Like WHERE user_id = {user_id} AND post_id = {post_id}""")
-        cur.execute(f"""UPDATE Posts SET like_cnt= like_cnt-1 WHERE id= {post_id}""")
+        cur.execute(f"""DELETE FROM Post_Like WHERE user_id = {
+                    user_id} AND post_id = {post_id}""")
+        cur.execute(
+            f"""UPDATE Posts SET like_cnt= like_cnt-1 WHERE id= {post_id}""")
         connection.commit()
     else:
-        cur.execute(f"""INSERT INTO Post_Like (user_id, post_id) VALUES ({user_id}, {post_id})""")
-        cur.execute(f"""UPDATE Posts SET like_cnt= like_cnt+1 WHERE id= {post_id}""")
+        cur.execute(
+            f"""INSERT INTO Post_Like (user_id, post_id) VALUES ({user_id}, {post_id})""")
+        cur.execute(
+            f"""UPDATE Posts SET like_cnt= like_cnt+1 WHERE id= {post_id}""")
         connection.commit()
-    return jsonify({'push':True})
+    return jsonify({'push': True})
+
 
 if __name__ == "__main__":
     app.run()
