@@ -13,38 +13,38 @@
 ## 개발 환경
 
 # 주요 기능
-**로그인** [Login_Wiki]<https://github.com/luna-negra/csi_group_project/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C(Login)>
+**로그인** [Login_Wiki](https://github.com/luna-negra/csi_group_project/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C(Login))
   * DB값 검증
   * 로그인 시 세션(Session) 생성
   * 회원가입창으로 이동
 
-**회원가입**[Register_Wiki]<https://github.com/luna-negra/csi_group_project/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C(Register)>
+**회원가입**[Register_Wiki](https://github.com/luna-negra/csi_group_project/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C(Register))
   * ID,PW 규칙(길이제한, 영문,숫자,특수문자 포함) 체크
   * ID 중복 체크
   * PW 암호화(SHA-256)
 
-**네이게이션 바** [Nav_bar_Wiki]<https://github.com/luna-negra/csi_group_project/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C(Nav-bar)>
+**네이게이션 바** [Nav_bar_Wiki](https://github.com/luna-negra/csi_group_project/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C(Nav-bar))
   * Home(Main)으로 이동
   * TIL 전체 리스트 조회
   * Leaderboard 이동
 
-**My 메뉴** [My_menu_Wiki]<https://github.com/luna-negra/csi_group_project/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C(Nav-bar)#%EF%B8%8Fmy-%EB%A9%94%EB%89%B4>
+**My 메뉴** [My_menu_Wiki](https://github.com/luna-negra/csi_group_project/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C(Nav-bar)#%EF%B8%8Fmy-%EB%A9%94%EB%89%B4)
   * 내 정보 확인
   * 내가 쓴 TIL목록
   * TIL 새로 작성
   * 로그아웃
   
-**메인** [Main]<https://github.com/luna-negra/csi_group_project/wiki/Main-%ED%99%94%EB%A9%B4-%EA%B5%AC%EC%84%B1>
+**메인** [Main](https://github.com/luna-negra/csi_group_project/wiki/Main-%ED%99%94%EB%A9%B4-%EA%B5%AC%EC%84%B1)
   * 가장 최신 TIL 3개 표시
   * TIL box 애니메이션 효과(CSS)
     * 앞면 - 썸네일, 제목
     * 뒷면 - 작성자,좋아요 수, 작성일자, 게시물 링크
 
-**TIL_LIST** [TIL_list_Wiki]<https://github.com/luna-negra/csi_group_project/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C(TIL_LIST)>
+**TIL_LIST** [TIL_list_Wiki](https://github.com/luna-negra/csi_group_project/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C(TIL_LIST))
   * 전체 TIL을 조회
   * user_id를 통해 특정 조회
   * 페이지네이션 
 
-**Leaderboard** [Leaderboard]<https://github.com/luna-negra/csi_group_project/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C(Leaderboard)>
+**Leaderboard** [Leaderboard](https://github.com/luna-negra/csi_group_project/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C(Leaderboard))
   * 연속일자로 등록한 유저순으로 순위 표시
   * 페이지네이션
