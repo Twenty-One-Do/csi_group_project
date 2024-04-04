@@ -12,6 +12,13 @@ img{
     box-shadow: 0 4px 8px var(--accent-color);
 }
 
+#post_contents li {
+    position: relative;
+    list-style-type: auto;
+    text-align: left;
+    margin-left: 20px;
+    width: 100%;
+}
 .post-contents {
     margin-bottom: 20px;
 }
