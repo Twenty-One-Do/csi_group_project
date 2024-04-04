@@ -76,7 +76,18 @@
         <div class="comments">댓글이 없습니다.</div>
         {% else %}
         {% for comment in data['comments'] %}
-        <div class="comments">{{ comment['b.username'] }} - {{ comment['a.contents'] }}</div>
+        <div class="comments_line">
+          <div class="comments">
+            {{ comment['b.username'] }} - {{ comment['a.contents'] }}
+          </div>
+          
+          {% if 'meminfo' in data['session'] and data['session']['meminfo']['id'] == comment['a.user_id'] %}
+              <form action="../comment_delete/{{ comment['a.id'] }}&{{ data['post'][0]['a.id'] }}" method="POST" class="del_btn_form">
+                <button class="btn">삭제</button>
+              </form>
+          {% endif %}
+          
+        </div>
         {% endfor %}
         {% endif %}
       </div>

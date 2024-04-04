@@ -208,6 +208,25 @@ def comment_post(post_id):
     connection.commit()
     return redirect(url_for("post", post_id=post_id))
 
+@app.route("/comment_delete/<comment_id>", methods=['POST'])
+def comment_delete(comment_id):
+    comment_id, post_id = comment_id.split('&')
+    user_id = session['meminfo']['id']
+    search_query = {
+            'comment':{
+                'table':'Comments',
+                "attributes": ["id", "post_id", "user_id"],
+                "condition": f'id = {comment_id} AND user_id = {user_id}'
+            }
+        }
+    result = search_query_execute(cur, search_query)['comment'][0]
+    if result is None:
+        flash("권한이 없습니다!")
+        return redirect(url_for('home'))
+    else:
+        cur.execute(f"""DELETE FROM Comments WHERE user_id = {user_id} AND id = {comment_id}""")
+        connection.commit()
+        return redirect(url_for('post', post_id=post_id))
 
 @app.route("/write", methods=['GET', 'POST'])
 def write():
