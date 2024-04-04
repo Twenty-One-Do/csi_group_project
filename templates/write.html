@@ -24,7 +24,7 @@
           <ul class="dropdown">
             {% if 'meminfo' in data['session'] %}
             <li><a href="/my_page">내 정보</a></li>
-            <li><a href="/til_list/1&{{ data['session']['meminfo']['id'] }}">내 TIL</a></li>
+            <li><a href="/til_list/1&{{ data['session']['meminfo']['name'] }}">내 TIL</a></li>
             <li><a href="/write">글 작성</a></li>
             <li><a href="/logout">로그아웃</a></li>
             {% else %}
