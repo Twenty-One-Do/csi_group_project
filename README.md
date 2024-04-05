@@ -1,22 +1,22 @@
-# CSI_Group_Project
+# 🔡CSI_Group_Project
 스파르타 AI 6기 조별 프로젝트 + 공부 공유 커뮤니티
-# 프로젝트 소개
+# 📝프로젝트 소개
 각자 작성한 TIL을 공유, 작성 횟수에 따른 리더보드 내 순위 나열
-# 개발 기간
+# 📅개발 기간
 * 2024.04.01일 - 2024.04.05일
-## 멤버 구성
+## 👥멤버 구성
 * 양승조(팀원) - 메인화면 구현, navbar,footer 구현, 게시글(Create, Read) 기능, html 리팩토링, 전반적인 css 작업
 * 이원도(팀원) - 메인화면 구현, 게시글(Create, Read, Update, Delte) 기능, 로그인/회원가입 구현, 게시물 내 좋아요 count 구현, 전체 코드 리팩토링, Color CSS 통합
 * 이혜민(팀장) - TIL 목록 구현
 * 임현경(팀원) - 로그인/회원가입 구현, 마이페이지 구현, 세션 적용
 * 현유경(팀원) - 리더보드 목록 구현
-## 개발 환경
+## 🖥️개발 환경
 * HTML
 * CSS
 * python : Flask
 * DB : SQLite
 
-# 주요 기능
+# ✅주요 기능
 **로그인**  📎[Wiki](https://github.com/luna-negra/csi_group_project/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C(Login))
   * DB값 검증
   * 로그인 시 세션(Session) 생성
@@ -53,7 +53,7 @@
   * 연속일자로 등록한 유저순으로 순위 표시
   * 페이지네이션
 
-**게시물** 📎[Wiki]
+**게시물** 📎[Wiki](https://github.com/luna-negra/csi_group_project/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C(Post))
   * 글 제목, 작성자, 내용 확인
   * 게시물 수정 및 삭제
   * 게시물에 대한 좋아요 반응 가능 및 좋아요 갯수 표시
