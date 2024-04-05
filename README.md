@@ -49,6 +49,12 @@
   * user_id를 통해 특정 조회
   * 페이지네이션 
 
-**Leaderboard**  📎[Wiki](https://github.com/luna-negra/csi_group_project/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C(Leaderboard))
+**리더 보드**  📎[Wiki](https://github.com/luna-negra/csi_group_project/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C(Leaderboard))
   * 연속일자로 등록한 유저순으로 순위 표시
   * 페이지네이션
+
+**게시물** 📎[Wiki]
+  * 글 제목, 작성자, 내용 확인
+  * 게시물 수정 및 삭제
+  * 게시물에 대한 좋아요 반응 가능 및 좋아요 갯수 표시
+  * 게시물에 대한 댓글 작성 가능
