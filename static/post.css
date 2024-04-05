@@ -57,7 +57,19 @@ img{
 }
 
 .del_btn_form{
-    margin-top: 15px;
+    width: 5%;
+    padding-top: 10px;
+}
+
+
+.editField {
+    width: 95%; /* 가로 길이를 부모 요소에 맞춤 */
+    height: 25px; /* 수직 길이를 150px로 설정 */
+    padding: 10px; /* 내부 여백 추가 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    border: 1px solid #ccc; /* 테두리 설정 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    resize: none;
 }
 
 .btn{
@@ -74,6 +86,37 @@ img{
     border-radius: 5px; 
     transition: background-color 0.3s, box-shadow 0.3s;
 }
+
+.mod_conf_btn{
+    background-color: var(--accent-color); 
+    color: var(--normal-color); 
+    padding: 5px 5px; 
+    text-align: center; 
+    text-decoration: none; 
+    display: inline-block; 
+    font-size: 13px; 
+    margin: 0px 4px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px; 
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.mod_btn{
+    background-color: var(--accent-color); 
+    color: var(--normal-color); 
+    padding: 5px 5px; 
+    text-align: center; 
+    text-decoration: none; 
+    display: inline-block; 
+    font-size: 13px; 
+    margin: 0px 4px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px; 
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
 .like_btn:hover {
     background-color: var(--normal-color);
     color: var(--accent-color);
@@ -88,15 +131,12 @@ img{
 
 .comments_box {
     background: var(--normal-color);
-    padding: 10px;
-    margin: 10px 0;
 }
 
 .comments {
     background: var(--normal-color);
-    padding: 10px;
-    margin: 10px 0;
-    width: 80%;
+    width: 90%;
+    height: 100%;
 }
 
 .container {
