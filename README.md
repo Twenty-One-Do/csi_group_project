@@ -13,6 +13,7 @@
 ## 🖥️개발 환경
 * HTML
 * CSS
+* JavaScript
 * python : Flask
 * DB : SQLite
 
