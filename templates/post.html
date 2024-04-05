@@ -78,10 +78,18 @@
         {% for comment in data['comments'] %}
         <div class="comments_line">
           <div class="comments">
-            {{ comment['b.username'] }} - {{ comment['a.contents'] }}
+            <p id="comment-text-{{ loop.index }}" username="{{ comment['b.username'] }}">{{ comment['b.username'] }} - {{ comment['a.contents'] }}</p>
+            <textarea type="text" class="editField" id="edit-field-{{ loop.index }}" style="display: none;"></textarea>
           </div>
           
           {% if 'meminfo' in data['session'] and data['session']['meminfo']['id'] == comment['a.user_id'] %}
+              <form action="" method="POST" class="del_btn_form" id="conf-btn-{{ loop.index }}" style="display: none;"> 
+                <!-- 이제 이부분 fetch로 보내서 수정하면 될듯? -->
+                <button type="button" class="mod_conf_btn" id="conf-btn-{{ loop.index }}" comment_id = "{{ comment['a.id'] }}">확인</button>
+              </form>
+              <form action="" method="POST" class="del_btn_form">
+                <button type="button" class="mod_btn" id="mod-btn-{{ loop.index }}">수정</button>
+              </form>
               <form action="../comment_delete/{{ comment['a.id'] }}&{{ data['post'][0]['a.id'] }}" method="POST" class="del_btn_form">
                 <button class="btn">삭제</button>
               </form>
@@ -162,6 +170,62 @@
       var targetUrl = "../del/"+post_id.toString();
       window.location.href = targetUrl;
     }
+
+    document.querySelectorAll('.mod_conf_btn').forEach(button => {
+        button.addEventListener('click', function() {
+            this.disabled = true;
+            console.log('why')
+            const commentIdx = this.getAttribute('id').split('-')[2];
+            const commentId = this.getAttribute('comment_id');
+
+            var commentText = document.getElementById("comment-text-"+commentIdx);
+            var editField = document.getElementById("edit-field-"+commentIdx);
+            var confField = document.getElementById("conf-btn-"+commentIdx);
+            const new_content = editField.value;
+            if (new_content.length == 0){
+              alert("댓글을 입력해주세요");
+              this.disabled = false;
+              return 0;
+            }
+            const username = commentText.getAttribute('username')
+            commentText.innerText = username+" - "+new_content; // 코멘트 업데이트
+            editField.style.display = 'none';
+            confField.style.display = 'none';
+            commentText.style.display = 'block';
+
+            mod_button = document.getElementById("mod-btn-"+commentIdx);
+
+            mod_button.innerHTML = "수정"
+
+            const response = fetch('/comment_mod', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({comment_id: commentId, content: new_content})
+            });
+            setTimeout(() => {this.disabled = false;}, 500);
+        });
+    });
+
+    document.querySelectorAll('.mod_btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const commentId = this.getAttribute('id').split('-')[2];
+            var commentText = document.getElementById("comment-text-"+commentId);
+            var editField = document.getElementById("edit-field-"+commentId);
+            var confField = document.getElementById("conf-btn-"+commentId);
+            if (editField.style.display === 'none') {
+                this.innerHTML = "취소"
+                editField.style.display = 'block';
+                confField.style.display = 'block';
+                editField.value = commentText.innerText.split(' - ').slice(1).join(" - "); // 텍스트 필드에 기존 코멘트를 복사
+                commentText.style.display = 'none'; // 기존 텍스트 숨기기
+            } else {
+                this.innerHTML = "수정"
+                editField.style.display = 'none';
+                confField.style.display = 'none';
+                commentText.style.display = 'block';
+            }
+        });
+    });
   </script>
 </body>
 

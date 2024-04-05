@@ -200,12 +200,12 @@ def comment_post(post_id):
     post_id = post_id
     user_id = session['meminfo']['id']
     content = request.form['comment_content']
-
-    cur.execute("""
-    INSERT INTO Comments (post_id, user_id, contents)
-    VALUES ({}, {}, '{}')
-    """.format(post_id, user_id, content))
-    connection.commit()
+    if content != "":
+        cur.execute("""
+        INSERT INTO Comments (post_id, user_id, contents)
+        VALUES ({}, {}, '{}')
+        """.format(post_id, user_id, content))
+        connection.commit()
     return redirect(url_for("post", post_id=post_id))
 
 @app.route("/comment_delete/<comment_id>", methods=['POST'])
@@ -527,6 +527,16 @@ GROUP BY Members.id"""
         # Thread Wait by Event Object
         event_o.wait(60)
 # 임현경 작업 완료
+
+@app.route('/comment_mod',methods=['POST'])
+def comment_mod():
+    data = request.get_json()
+    id, new_content = int(data['comment_id']), data['content']
+    user_id = session['meminfo']['id']
+    query = f"""UPDATE Comments SET contents='{new_content}' WHERE id={id} AND user_id={user_id}"""
+    cur.execute(query)
+    connection.commit()
+    return jsonify({'db_change':True})
 
 
 if __name__ == "__main__":
